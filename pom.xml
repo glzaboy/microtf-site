@@ -32,6 +32,7 @@
         </plugins>
     </build>
     <modules>
+        <module>micro-tf-api</module>
     </modules>
     <packaging>pom</packaging>
     <properties>
