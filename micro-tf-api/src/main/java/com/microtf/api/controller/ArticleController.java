@@ -112,6 +112,24 @@ public class ArticleController {
             return n;
         });
     }
+    @RequestMapping(value = "/getArticle2", method = {RequestMethod.GET}, produces = {"application/json"})
+    @ApiResponse(code = 200, message = "获取单篇文章")
+    @ApiOperation(value = "获取单篇文章", notes = "获取单篇文章")
+    public Response<ArticleDto> getArticle2(@RequestParam Integer id) {
+        ArticleEntity article = articleService.getArticleById(id);
+        return ResponseUtil.responseData(article, (item) -> {
+            ArticleDto n = new ArticleDto();
+            BeanUtils.copyProperties(item, n);
+            SiteDto siteDto = new SiteDto();
+            BeanUtils.copyProperties(item.getSiteEntity(), siteDto);
+            n.setSiteDto(siteDto);
+            ArticleContentDto articleContentDto = new ArticleContentDto();
+            BeanUtils.copyProperties(item.getContent(), articleContentDto);
+            n.setContent(articleContentDto);
+            n.setCategoryId(item.getCategoryEntityList().stream().map(CategoryEntity::getId).toList());
+            return n;
+        });
+    }
     /**
      * 保存文章
      *
