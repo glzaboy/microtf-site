@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.microtf.framework.autoconfigure.LoginAutoConfiguration
