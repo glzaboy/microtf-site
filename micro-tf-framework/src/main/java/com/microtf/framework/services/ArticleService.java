@@ -114,6 +114,14 @@ public class ArticleService {
         }
         return articleEntity;
     }
+    public ArticleEntity getArticleById(@NotNull Integer id) {
+        Optional<ArticleEntity> byId = articleRepository.findById(id);
+        if(byId.isEmpty()){
+            throw new BizException("内容不存在。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
+        }
+        ArticleEntity articleEntity = byId.get();
+        return articleEntity;
+    }
     @Transactional(rollbackOn = {BizException.class})
     public ArticleEntity saveArticle(@NotNull ArticleDto articleDto, @NotNull SiteEntity siteEntity) {
         ArticleEntity articleEntityExample = new ArticleEntity();
