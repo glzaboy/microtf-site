@@ -32,8 +32,12 @@ public class ArticleEntity {
             joinColumns = @JoinColumn(name = "ArticleEntity_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "categoryEntityList_id", referencedColumnName = "id"))
     List<CategoryEntity> categoryEntityList = new java.util.ArrayList<>();
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
+    @JoinColumn
     ArticleContentEntity content;
     Date createTime;
     Date updateTime;
+    @OneToOne(cascade = {CascadeType.PERSIST})
+    @JoinColumn(updatable = false)
+    SiteEntity siteEntity;
 }

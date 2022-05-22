@@ -21,12 +21,6 @@ public class ArticleContentEntity {
     @Column(nullable = false, updatable = false)
     @GenericGenerator(name = "native", strategy = "native")
     private Integer contentId;
-    /**
-     * 标题
-     */
-    @Lob
-    @Comment("原始内容")
-    private String raw;
     @Comment("html内容")
     @Lob
     private String html;

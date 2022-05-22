@@ -6,7 +6,6 @@ import com.microtf.framework.dto.site.SiteDto;
 import com.microtf.framework.exceptions.BizException;
 import com.microtf.framework.jpa.entity.SiteEntity;
 import com.microtf.framework.services.SiteService;
-import com.microtf.framework.services.UserService;
 import com.microtf.framework.utils.ResponseUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.BeanUtils;
@@ -25,13 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/site")
 public class SiteController {
-
-    UserService userService;
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
 
     SiteService siteService;
 
@@ -55,7 +47,7 @@ public class SiteController {
     @Login
     @RequestMapping(value = "/saveCurrentSite", method = {RequestMethod.GET})
     public Response<SiteDto> saveSite(SiteDto siteDto) {
-        SiteEntity siteEntity = siteService.saveCurrentSite(siteDto);
+        siteService.saveCurrentSite(siteDto);
         return ResponseUtil.responseData(siteDto);
     }
 }
