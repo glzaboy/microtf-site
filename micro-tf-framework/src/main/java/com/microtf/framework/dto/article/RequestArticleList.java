@@ -1,4 +1,4 @@
-package com.microtf.framework.dto;
+package com.microtf.framework.dto.article;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.microtf.framework.dto.common.Page;

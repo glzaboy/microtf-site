@@ -1,21 +1,18 @@
-package com.microtf.framework.dto;
+package com.microtf.framework.dto.article;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.microtf.framework.dto.site.SiteDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
- * 文章
+ * 站点目录
  * @author guliuzhong
  */
 @Data
-public class ArticleDto implements Serializable {
+public class CategoryDto implements Serializable {
     /**
      * Id
      */
@@ -25,19 +22,12 @@ public class ArticleDto implements Serializable {
      * 名称
      */
     @ApiModelProperty(value = "名称")
-    String title;
+    String name;
     /**
-     * 内容
+     * 启用
      */
-    @ApiModelProperty(value = "内容")
-    @JsonUnwrapped
-    ArticleContentDto content;
-    /**
-     * 类目ID
-     */
-    List<Integer> categoryId=new ArrayList<>();
-
-    List<CategoryDto> categoryDtoList=new ArrayList<>();
+    @ApiModelProperty(value = "启用")
+    Boolean enable;
 
     @ApiModelProperty(value = "站点")
     SiteDto siteDto;

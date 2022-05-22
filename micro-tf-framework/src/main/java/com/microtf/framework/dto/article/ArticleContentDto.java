@@ -1,4 +1,4 @@
-package com.microtf.framework.dto;
+package com.microtf.framework.dto.article;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
