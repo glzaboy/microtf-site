@@ -1,0 +1,38 @@
+package com.microtf.framework.dto;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * 带分页的数据
+ * @author guliuzhong
+ * @param <T>
+ */
+@Data
+@ApiModel(value = "PageData",description = "带分页的数据")
+public class ResponsePage <T extends Serializable> extends BaseResponse implements Serializable{
+    /**
+     * 数据列表
+     */
+    @ApiModelProperty(value = "列表数据")
+    List<T> data;
+    /**
+     * 当前页码
+     */
+    @ApiModelProperty(value = "当前页码",example = "1")
+    private Integer current;
+    /**
+     * 每页数据
+     */
+    @ApiModelProperty(value = "每页数据条数",example = "10")
+    private Integer pageSize;
+    /**
+     * 总数
+     */
+    @ApiModelProperty(value = "总条数",example = "100")
+    private long total;
+}
