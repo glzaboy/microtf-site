@@ -54,7 +54,7 @@ public class LoginService {
      */
     public Optional<LoginUser> login(@NotNull @Valid LoginUser loginUser) throws LoginException {
         Optional<LoginAuth> first = loginAuths.stream().filter(item -> item.getLoginType().equals(loginUser.getLoginType())).findFirst();
-        if (!first.isPresent()) {
+        if (first.isEmpty()) {
             log.error("不支持的登录方式");
             throw new LoginException("不支持的登录方式");
         }
@@ -82,7 +82,7 @@ public class LoginService {
         if (authorization != null && authorization.startsWith(bearer)) {
             jwtOption = Optional.of(authorization.replace(bearer, ""));
         }
-        if (!jwtOption.isPresent()) {
+        if (jwtOption.isEmpty()) {
             Cookie[] cookies = request.getCookies();
             if (cookies == null) {
                 LoginStateDto.LoginStateDtoBuilder loginStateDtoBuilder = LoginStateDto.builder();

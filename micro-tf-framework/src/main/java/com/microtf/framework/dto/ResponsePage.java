@@ -3,6 +3,7 @@ package com.microtf.framework.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @author guliuzhong
  * @param <T>
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(value = "PageData",description = "带分页的数据")
 public class ResponsePage <T extends Serializable> extends BaseResponse implements Serializable{

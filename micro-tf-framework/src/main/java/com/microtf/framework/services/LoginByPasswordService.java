@@ -36,7 +36,7 @@ public class LoginByPasswordService implements LoginAuth {
         loginEntityExample.setLoginType(String.valueOf(getLoginType()));
         loginEntityExample.setLoginId(loginUser.getLoginId());
         Optional<LoginEntity> one = loginRepository.findOne(Example.of(loginEntityExample));
-        if (!one.isPresent()) {
+        if (one.isEmpty()) {
             //用户不存在登录失败
             throw new LoginException("登录失败，用户不存在");
         }

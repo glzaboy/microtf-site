@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * 浏览器返回 数据 util
@@ -61,6 +62,16 @@ public class ResponseUtil {
         bizResponse.setErrorCode("1");
         return bizResponse;
     }
+
+    public static<T,S extends Serializable> Response<S> responseData(T  data, Function<T,S> function) {
+        Response<S> bizResponse=new Response<>();
+        bizResponse.setSuccess(true);
+        S apply = function.apply(data);
+        bizResponse.setData(apply);
+        bizResponse.setShowType(Response.ErrorShowType.REDIRECT.getErrorType());
+        bizResponse.setErrorCode("1");
+        return bizResponse;
+    }
     public static<T,S extends Serializable> ResponsePage<S> responseData(Page<T> data, Class<S> clazz) {
         ResponsePage<S> bizResponse=new ResponsePage<>();
         bizResponse.setSuccess(true);
@@ -73,6 +84,22 @@ public class ResponseUtil {
             S s= BeanUtils.instantiateClass(clazz);
             BeanUtils.copyProperties(item,s);
             dataList.add(s);
+        }
+        bizResponse.setData(dataList);
+        bizResponse.setErrorCode("1");
+        return bizResponse;
+    }
+    public static<T,S extends Serializable> ResponsePage<S> responseDataPage(Page<T> data, Function<T,S> function) {
+        ResponsePage<S> bizResponse=new ResponsePage<>();
+        bizResponse.setSuccess(true);
+        bizResponse.setTotal(data.getTotalElements());
+        bizResponse.setCurrent(data.getPageable().getPageNumber());
+        bizResponse.setPageSize(data.getPageable().getPageSize());
+        List<T> content = data.getContent();
+        List<S> dataList=new ArrayList<>();
+        for (T item:content){
+            S apply = function.apply(item);
+            dataList.add(apply);
         }
         bizResponse.setData(dataList);
         bizResponse.setErrorCode("1");
