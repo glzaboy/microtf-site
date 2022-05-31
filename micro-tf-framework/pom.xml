@@ -47,6 +47,10 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.microtf</groupId>
+            <artifactId>microt-tf-common</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

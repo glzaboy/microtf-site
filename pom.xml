@@ -34,6 +34,7 @@
     <modules>
         <module>micro-tf-api</module>
         <module>micro-tf-framework</module>
+        <module>microt-tf-common</module>
     </modules>
     <packaging>pom</packaging>
     <properties>
@@ -45,6 +46,11 @@
             <dependency>
                 <groupId>com.microtf</groupId>
                 <artifactId>micro-tf-framework</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microtf</groupId>
+                <artifactId>microt-tf-common</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>
