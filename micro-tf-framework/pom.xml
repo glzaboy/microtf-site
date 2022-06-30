@@ -51,6 +51,10 @@
             <groupId>com.microtf</groupId>
             <artifactId>microt-tf-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
