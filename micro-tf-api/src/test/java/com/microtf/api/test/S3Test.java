@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -19,7 +21,7 @@ public class S3Test {
     S3StorageService s3StorageService;
     @Test
     public void test(){
-        StorageObject aa = s3StorageService.upload("abc".getBytes(StandardCharsets.UTF_8), "aa");
+        StorageObject aa = s3StorageService.upload("abc".getBytes(StandardCharsets.UTF_8), "aa.txt");
         log.info(aa.toString());
     }
     @Test
@@ -34,5 +36,23 @@ public class S3Test {
 
 
         log.info(String.valueOf(upload));
+    }
+    @Test
+    public void test4(){
+        try {
+            FileInputStream fileInputStream = new FileInputStream("/Users/guliuzhong/Desktop/zbj.png");
+            StorageObject aa = s3StorageService.upload(fileInputStream.readAllBytes(), "abcdef");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void test5(){
+        try {
+            FileInputStream fileInputStream = new FileInputStream("/Users/guliuzhong/Desktop/zbj.png");
+            StorageObject aa = s3StorageService.upload(fileInputStream, "abcdefg");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -13,15 +13,18 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
+import java.net.URLConnection;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 存储服务
@@ -43,37 +46,8 @@ public class S3StorageService implements StorageService {
     }
     @Override
     public StorageObject upload(byte[] data, String objName) throws BizException {
-        StorageObject storageObject=new StorageObject();
-        try {
-            ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(data);
-            PutObjectArgs.Builder builder = PutObjectArgs.builder();
-            builder.bucket(config.getBucket());
-            builder.object(objName);
-            builder.stream(byteArrayInputStream,byteArrayInputStream.available(),-1);
-            byteArrayInputStream.close();
-            ObjectWriteResponse objectWriteResponse = getClient().putObject(builder.build());
-            storageObject.setObjectName(objName);
-            storageObject.setUrl(config.getRootPath()+objName);
-        } catch (ErrorResponseException e) {
-            e.printStackTrace();
-        } catch (InsufficientDataException e) {
-            e.printStackTrace();
-        } catch (InternalException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (InvalidResponseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (ServerException e) {
-            e.printStackTrace();
-        } catch (XmlParserException e) {
-            e.printStackTrace();
-        }
-        return storageObject;
+        ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(data);
+        return upload(byteArrayInputStream,objName);
     }
 
     @Override
@@ -128,37 +102,49 @@ public class S3StorageService implements StorageService {
 
     @Override
     public StorageObject upload(InputStream inputStream, String objName) throws BizException {
-        StorageObject storageObject=new StorageObject();
-        PutObjectArgs.Builder builder = PutObjectArgs.builder();
-        builder.bucket(config.getBucket());
-        builder.object(objName);
-        try {
-            builder.stream(inputStream,inputStream.available(),-1);
-            ObjectWriteResponse objectWriteResponse = getClient().putObject(builder.build());
-            storageObject.setObjectName(objName);
-            storageObject.setUrl(config.getRootPath()+objName);
-        } catch (ErrorResponseException e) {
-            e.printStackTrace();
-        } catch (InsufficientDataException e) {
-            e.printStackTrace();
-        } catch (InternalException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (InvalidResponseException e) {
-            e.printStackTrace();
+
+        try(BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)){
+            StorageObject storageObject=new StorageObject();
+            PutObjectArgs.Builder builder = PutObjectArgs.builder();
+            builder.bucket(config.getBucket());
+            builder.object(objName);
+            try {
+                String s = URLConnection.guessContentTypeFromName(objName);
+                if(s==null){
+                    s=URLConnection.guessContentTypeFromStream(bufferedInputStream);
+                }
+                builder.contentType(s);
+                builder.stream(bufferedInputStream,bufferedInputStream.available(),-1);
+                ObjectWriteResponse objectWriteResponse = getClient().putObject(builder.build());
+                storageObject.setObjectName(objName);
+                storageObject.setUrl(config.getRootPath()+objName);
+                storageObject.setObjectName(objName);
+                storageObject.setUrl(config.getRootPath()+objName);
+                return storageObject;
+            } catch (ErrorResponseException e) {
+                e.printStackTrace();
+            } catch (InsufficientDataException e) {
+                e.printStackTrace();
+            } catch (InternalException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (InvalidResponseException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (ServerException e) {
+                e.printStackTrace();
+            } catch (XmlParserException e) {
+                e.printStackTrace();
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (ServerException e) {
-            e.printStackTrace();
-        } catch (XmlParserException e) {
-            e.printStackTrace();
+        }finally {
         }
-        storageObject.setObjectName(objName);
-        storageObject.setUrl(config.getRootPath()+objName);
-        return storageObject;
+        return null;
     }
 
     @Override
