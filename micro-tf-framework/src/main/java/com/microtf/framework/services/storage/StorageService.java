@@ -1,6 +1,7 @@
 package com.microtf.framework.services.storage;
 
 import com.microtf.framework.dto.storage.StorageObject;
+import com.microtf.framework.dto.storage.StorageObjectStream;
 import com.microtf.framework.exceptions.BizException;
 
 import java.io.InputStream;
@@ -23,7 +24,7 @@ public interface StorageService {
      * @throws BizException 失败信息
      */
     default StorageObject upload(byte[] data, String objName) throws BizException {
-        throw new UnsupportedOperationException("不支付的功能");
+        throw new UnsupportedOperationException("不支持的功能");
     }
 
     /**
@@ -35,7 +36,7 @@ public interface StorageService {
      * @throws BizException 失败信息
      */
     default StorageObject upload(URI url, String objName) throws BizException {
-        throw new UnsupportedOperationException("不支付的功能");
+        throw new UnsupportedOperationException("不支持的功能");
     }
 
     /**
@@ -47,7 +48,7 @@ public interface StorageService {
      * @throws BizException 失败信息
      */
     default StorageObject upload(InputStream inputStream, String objName) throws BizException {
-        throw new UnsupportedOperationException("不支付的功能");
+        throw new UnsupportedOperationException("不支持的功能");
     }
 
     /**
@@ -57,8 +58,18 @@ public interface StorageService {
      * @return 是否成功
      * @throws BizException 失败信息
      */
-    default List<String> delete(String objName) throws BizException {
-        throw new UnsupportedOperationException("不支付的功能");
+    default void delete(String objName) throws BizException {
+        throw new UnsupportedOperationException("不支持的功能");
+    }
+    /**
+     * 删除存储
+     *
+     * @param objNameList 存储名称列表
+     * @return 是否成功信息
+     * @throws BizException 失败信息
+     */
+    default List<String> delete(List<String> objNameList) throws BizException {
+        throw new UnsupportedOperationException("不支持的功能");
     }
 
     /**
@@ -68,8 +79,18 @@ public interface StorageService {
      * @return 存储信息
      * @throws BizException 失败信息
      */
-    default StorageObject getObject(String objName) throws BizException {
-        throw new UnsupportedOperationException("不支付的功能");
+    default StorageObject getUrl(String objName) throws BizException {
+        throw new UnsupportedOperationException("不支持的功能");
+    }
+    /**
+     * 获取文件输入流
+     *
+     * @param objName 存储名称
+     * @return 文件流
+     * @throws BizException 失败信息
+     */
+    default StorageObjectStream getStream(String objName) throws BizException {
+        throw new UnsupportedOperationException("不支持的功能");
     }
 
     /**
@@ -77,6 +98,6 @@ public interface StorageService {
      * 用于选择存储点
      */
     default String getPathStart() {
-        throw new UnsupportedOperationException("不支付的功能");
+        throw new UnsupportedOperationException("不支持的功能");
     }
 }

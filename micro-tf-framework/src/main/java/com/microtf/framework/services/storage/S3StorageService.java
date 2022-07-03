@@ -1,17 +1,17 @@
 package com.microtf.framework.services.storage;
 
 import com.microtf.framework.dto.storage.StorageObject;
+import com.microtf.framework.dto.storage.StorageObjectStream;
 import com.microtf.framework.exceptions.BizException;
 import io.minio.*;
 import io.minio.errors.*;
+import io.minio.http.Method;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
 import lombok.Getter;
 import lombok.Setter;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -22,14 +22,14 @@ import java.net.URI;
 import java.net.URLConnection;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 存储服务
+ * S3协议存储服务
  * @author guliuzhong
  */
+@Slf4j
 public class S3StorageService implements StorageService {
     @Setter
     @Getter
@@ -37,158 +37,165 @@ public class S3StorageService implements StorageService {
     @Setter
     @Getter
     private Config config;
+    /**
+     * S3客户端
+     */
+    private MinioClient minioClient;
+
+    /**
+     * 获取或初始化S3客户端
+     * @return MinioClient客户端
+     */
     private MinioClient getClient(){
+        if(minioClient!=null){
+            return minioClient;
+        }
         MinioClient.Builder builder = MinioClient.builder();
         builder.endpoint(config.getEndPoint());
         builder.region(config.getRegion());
         builder.credentials(config.getAccessKeyId(),config.getSecretAccessKey());
-        return builder.build();
+        minioClient= builder.build();
+        return minioClient;
     }
     @Override
     public StorageObject upload(byte[] data, String objName) throws BizException {
         ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(data);
         return upload(byteArrayInputStream,objName);
     }
-
     @Override
     public StorageObject upload(URI url, String objName) throws BizException {
-        StorageObject storageObject=new StorageObject();
-        OkHttpClient.Builder builder=new OkHttpClient.Builder();
-        OkHttpClient build = builder.build();
-        Request.Builder builder1=new Request.Builder();
+        OkHttpClient.Builder httpClientBuilder=new OkHttpClient.Builder();
+        OkHttpClient httpClient = httpClientBuilder.build();
+        Request.Builder requestBuilder=new Request.Builder();
         try {
-            builder1.url(url.toURL()).get();
+            requestBuilder.url(url.toURL()).get();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            log.error("S3StorageService-->upload download url {}失败 {}",url,e);
+            throw new BizException("上传文件失败，获取远程内容失败");
         }
         try {
-            Response execute = build.newCall(builder1.build()).execute();
-            if(execute.isSuccessful()){
-                MediaType mediaType = execute.body().contentType();
-                byte[] bytes = execute.body().bytes();
-                ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(bytes);
-                PutObjectArgs.Builder builder2 = PutObjectArgs.builder();
-                builder2.bucket(config.getBucket());
-                builder2.object(objName);
-                builder2.stream(byteArrayInputStream,byteArrayInputStream.available(),-1);
-                builder2.contentType(mediaType.toString());
-                try {
-                    ObjectWriteResponse objectWriteResponse = getClient().putObject(builder2.build());
-                    storageObject.setObjectName(objName);
-                    storageObject.setUrl(config.getRootPath()+objName);
-                } catch (ErrorResponseException e) {
-                    e.printStackTrace();
-                } catch (InsufficientDataException e) {
-                    e.printStackTrace();
-                } catch (InternalException e) {
-                    e.printStackTrace();
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
-                } catch (InvalidResponseException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (ServerException e) {
-                    e.printStackTrace();
-                } catch (XmlParserException e) {
-                    e.printStackTrace();
-                }
+            Response execute = httpClient.newCall(requestBuilder.build()).execute();
+            if(!execute.isSuccessful()){
+                throw new BizException("S3StorageService-->upload response fail");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            ResponseBody body = execute.body();
+            if(body==null){
+                log.error("S3StorageService-->upload response Body is null");
+                throw new BizException("上传文件失败，获取远程内容失败");
+            }
+            InputStream inputStream = body.byteStream();
+            PutObjectArgs.Builder pubObjectArgBuilder = PutObjectArgs.builder();
+            pubObjectArgBuilder.bucket(config.getBucket());
+            pubObjectArgBuilder.object(objName);
+            pubObjectArgBuilder.stream(inputStream,inputStream.available(),-1);
+            MediaType mediaType = body.contentType();
+            if(mediaType!=null){
+                pubObjectArgBuilder.contentType(mediaType.toString());
+            }
+            ObjectWriteResponse objectWriteResponse = getClient().putObject(pubObjectArgBuilder.build());
+            log.info("storage upload result{},{}",objectWriteResponse.etag(),objectWriteResponse.versionId());
+            return getUrl(objName);
+        } catch (IOException | ServerException | InsufficientDataException | ErrorResponseException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
+            log.error("S3StorageService-->upload storage upload fail",e);
+            throw new BizException("上传文件失败");
+        }
+    }
+
+    @Override
+    public StorageObject upload(InputStream inputStream, String objName) throws BizException {
+        try(BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)){
+            PutObjectArgs.Builder builder = PutObjectArgs.builder();
+            builder.bucket(config.getBucket());
+            builder.object(objName);
+            String contentType = URLConnection.guessContentTypeFromName(objName);
+            if(contentType==null){
+                contentType=URLConnection.guessContentTypeFromStream(bufferedInputStream);
+            }
+            builder.contentType(contentType);
+            builder.stream(bufferedInputStream,bufferedInputStream.available(),-1);
+            ObjectWriteResponse objectWriteResponse = getClient().putObject(builder.build());
+            log.info("storage upload result{},{}",objectWriteResponse.etag(),objectWriteResponse.versionId());
+            return getUrl(objName);
+        } catch (IOException | ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException | InvalidResponseException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
+            log.error("S3StorageService-->upload storage upload fail",e);
+            throw new BizException("上传文件失败");
+        }
+    }
+
+    @Override
+    public void delete(String objName) throws BizException {
+        try {
+            getClient().removeObject(RemoveObjectArgs.builder().bucket(config.getBucket()).object(objName).build());
+        } catch (ErrorResponseException | InternalException | InsufficientDataException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
+            log.error("S3StorageService-->delete storage file fail",e);
+            throw new BizException("删除文件失败");
+        }
+    }
+    @Override
+    public List<String> delete(List<String> objNameList) throws BizException {
+        List<DeleteObject> strings = new ArrayList<>();
+        for(String item:objNameList){
+            DeleteObject deleteObject=new DeleteObject(item);
+            strings.add(deleteObject);
+        }
+        Iterable<Result<DeleteError>> results =getClient().removeObjects(RemoveObjectsArgs.builder().bucket(config.getBucket()).objects(strings).build());
+        Iterator<Result<DeleteError>> iterator = results.iterator();
+        List<String> ret=new ArrayList<>();
+        while (iterator.hasNext()) {
+            Result<DeleteError> item = iterator.next();
+            DeleteError deleteError;
+            try {
+                deleteError = item.get();
+                ret.add(deleteError.message());
+            } catch (ErrorResponseException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException | InsufficientDataException e) {
+                log.error("S3StorageService-->delete storage file fail",e);
+            }
+        }
+        return  ret;
+    }
+
+    @Override
+    public StorageObject getUrl(String objName) throws BizException {
+        StorageObject storageObject=new StorageObject();
+        storageObject.setObjectName(objName);
+        if(config.getIsPrivate()){
+            GetPresignedObjectUrlArgs.Builder builder = GetPresignedObjectUrlArgs.builder();
+            builder.bucket(config.getBucket()).object(objName).expiry(config.getExpiry(), TimeUnit.SECONDS).method(Method.GET);
+            try {
+                storageObject.setUrl(getClient().getPresignedObjectUrl(builder.build()));
+            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | XmlParserException | ServerException e) {
+                log.error("S3StorageService-->getUrl fail",e);
+                throw new BizException("获取文件地址失败");
+            }
+        }else{
+            storageObject.setUrl(config.getUrlHost()+objName);
         }
         return storageObject;
     }
 
     @Override
-    public StorageObject upload(InputStream inputStream, String objName) throws BizException {
-
-        try(BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)){
-            StorageObject storageObject=new StorageObject();
-            PutObjectArgs.Builder builder = PutObjectArgs.builder();
-            builder.bucket(config.getBucket());
-            builder.object(objName);
-            try {
-                String s = URLConnection.guessContentTypeFromName(objName);
-                if(s==null){
-                    s=URLConnection.guessContentTypeFromStream(bufferedInputStream);
+    public StorageObjectStream getStream(String objName) throws BizException {
+        StorageObjectStream storageObjectStream=new StorageObjectStream();
+        storageObjectStream.setObjectName(objName);
+        Map<String,String> metaData=new HashMap<>(16);
+        GetObjectArgs.Builder builder = GetObjectArgs.builder();
+        builder.bucket(config.getBucket()).object(objName);
+        try {
+            GetObjectResponse object = getClient().getObject(builder.build());
+            if (object != null) {
+                Headers headers = object.headers();
+                for (int i=0;i<headers.size();i++){
+                    metaData.put(headers.name(i),headers.value(i));
                 }
-                builder.contentType(s);
-                builder.stream(bufferedInputStream,bufferedInputStream.available(),-1);
-                ObjectWriteResponse objectWriteResponse = getClient().putObject(builder.build());
-                storageObject.setObjectName(objName);
-                storageObject.setUrl(config.getRootPath()+objName);
-                storageObject.setObjectName(objName);
-                storageObject.setUrl(config.getRootPath()+objName);
-                return storageObject;
-            } catch (ErrorResponseException e) {
-                e.printStackTrace();
-            } catch (InsufficientDataException e) {
-                e.printStackTrace();
-            } catch (InternalException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (InvalidResponseException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (ServerException e) {
-                e.printStackTrace();
-            } catch (XmlParserException e) {
-                e.printStackTrace();
+                storageObjectStream.setMetaData(metaData);
+                storageObjectStream.setBufferedInputStream(new BufferedInputStream(object));
+                return storageObjectStream;
+            }else{
+                throw new BizException("获取远程数据出错");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
+        } catch (ServerException | InsufficientDataException | ErrorResponseException | IOException | NoSuchAlgorithmException | InvalidKeyException | InvalidResponseException | XmlParserException | InternalException e) {
+            log.error("S3StorageService-->getStream fail",e);
+            throw new BizException("获取远程数据出错");
         }
-        return null;
-    }
-
-    @Override
-    public List<String> delete(String objName) throws BizException {
-        DeleteObject deleteObject=new DeleteObject(objName);
-        List<DeleteObject> strings = new ArrayList<>();
-        strings.add(deleteObject);
-
-        Iterable<Result<DeleteError>> results = getClient().removeObjects(RemoveObjectsArgs.builder().bucket(config.getBucket()).objects(strings).build());
-        Iterator<Result<DeleteError>> iterator = results.iterator();
-        List<String> ret=new ArrayList<>();
-        for (Iterator<Result<DeleteError>> it = iterator; it.hasNext(); ) {
-            Result<DeleteError> item = it.next();
-            DeleteError deleteError = null;
-            try {
-                deleteError = item.get();
-            } catch (ErrorResponseException e) {
-                e.printStackTrace();
-            } catch (InsufficientDataException e) {
-                e.printStackTrace();
-            } catch (InternalException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (InvalidResponseException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (ServerException e) {
-                e.printStackTrace();
-            } catch (XmlParserException e) {
-                e.printStackTrace();
-            }
-            ret.add(deleteError.message());
-
-        }
-        return  ret;
-
-    }
-
-    @Override
-    public StorageObject getObject(String objName) throws BizException {
-        return StorageService.super.getObject(objName);
     }
 }

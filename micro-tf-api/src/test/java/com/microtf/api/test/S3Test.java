@@ -2,14 +2,14 @@ package com.microtf.api.test;
 
 import com.microtf.api.Application;
 import com.microtf.framework.dto.storage.StorageObject;
+import com.microtf.framework.dto.storage.StorageObjectStream;
 import com.microtf.framework.services.storage.S3StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -26,9 +26,7 @@ public class S3Test {
     }
     @Test
     public void test2(){
-        List<String> aa = s3StorageService.delete("aa");
-
-        log.info(aa.toString());
+        s3StorageService.delete("aa.txt");
     }
     @Test
     public void test3(){
@@ -54,5 +52,29 @@ public class S3Test {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @Test
+    public void test6(){
+        StorageObject aa = s3StorageService.getUrl("a.gif");
+        System.out.printf(String.valueOf(aa));
+    }
+    @Test
+    public void test7(){
+        StorageObjectStream aa = s3StorageService.getStream("a.gif");
+
+        try {
+            FileOutputStream fileOutputStream=new FileOutputStream(new File("abc.gif"));
+            aa.getBufferedInputStream().transferTo(
+                    fileOutputStream
+            );
+            fileOutputStream.close();
+            aa.getBufferedInputStream().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        System.out.printf(String.valueOf(aa));
     }
 }

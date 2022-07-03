@@ -16,6 +16,9 @@ public class ConfigUre {
         config.setRootPath("/s3");
         config.setAccessKeyId("YktOMQv-P4IE6K7PUtCxL1vg5lBrg2N3eIefOEls");
         config.setSecretAccessKey("FhSwYnE2SyLVIQN7bssUwGokf-EhSYz_kqhn1Olt");
+        config.setIsPrivate(true);
+        config.setExpiry(3600);
+        config.setUrlHost("http://microtf.qintingfm.com");
         S3StorageService s3StorageService=new S3StorageService();
         s3StorageService.setConfig(config);
         s3StorageService.setPathStart(config.getRootPath());
