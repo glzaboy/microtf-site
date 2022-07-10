@@ -12,10 +12,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 系统设置类
@@ -38,6 +38,24 @@ public class SettingService {
         this.objectMapper = objectMapper;
     }
 
+    public <T extends SettingDto> Map<String,T> getSettingByClass(Class<T> classic) {
+        SettingEntity settingEntity = new SettingEntity();
+//        settingEntity.setName(name);
+        settingEntity.setClassName(classic.getCanonicalName());
+        List<SettingEntity> all = settingRepository.findAll(Example.of(settingEntity));
+        Map<String,T> settings=new HashMap<>(16);
+        for (SettingEntity item:all) {
+            if (!item.getClassName().equals(classic.getCanonicalName())) {
+                continue;
+            }
+            try {
+                settings.put(item.getName(),objectMapper.readValue(item.getValue(),classic));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+        return settings;
+    }
     @Cacheable(value = "setting.bean", key = "#name")
     public <T extends SettingDto> T getSetting(String name, Class<T> classic) {
         SettingEntity settingEntity = new SettingEntity();
@@ -45,7 +63,7 @@ public class SettingService {
         settingEntity.setClassName(classic.getCanonicalName());
         List<SettingEntity> all = settingRepository.findAll(Example.of(settingEntity));
         if(all.size() != 1){
-            throw new BizException("配置文件不止不个无法进行处理");
+            throw new BizException("配置文件不止一个无法进行处理");
         }
         SettingEntity settingEntity1 = all.get(0);
         if (settingEntity1.getClassName().equals(classic.getCanonicalName())) {
@@ -71,6 +89,7 @@ public class SettingService {
      * @param <T>  类型限定为 SettingDto 的子类
      * @return 返回设置的对象值
      */
+    @Transactional(rollbackOn = {BizException.class})
     @CacheEvict(value = {"setting.bean"}, key = "#name")
     public <T extends SettingDto> T saveSetting(String name, T bean) {
         SettingEntity settingEntity = new SettingEntity();
@@ -80,12 +99,15 @@ public class SettingService {
         Optional<SettingEntity> first = all.stream().findFirst();
         SettingEntity settingEntity1 = first.orElseGet(SettingEntity::new);
         settingEntity1.setClassName(bean.getClass().getCanonicalName());
+        settingEntity1.setName(name);
         try {
             settingEntity1.setValue(objectMapper.writeValueAsString(bean));
+            settingRepository.save(settingEntity1);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            throw new BizException("数据序列化出错");
         }
-        settingRepository.save(settingEntity1);
+
         return bean;
     }
 }

@@ -1,9 +1,12 @@
 package com.microtf.framework.services.storage;
 
-import lombok.Data;
+import com.microtf.framework.dto.SettingDto;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class Config {
+@Getter
+@Setter
+public class Config extends SettingDto {
     /**
      * accessKeyId
      */

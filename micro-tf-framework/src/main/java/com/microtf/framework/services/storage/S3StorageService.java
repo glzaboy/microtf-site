@@ -8,8 +8,6 @@ import io.minio.errors.*;
 import io.minio.http.Method;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 
@@ -31,12 +29,30 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class S3StorageService implements StorageService {
-    @Setter
-    @Getter
     private String pathStart;
-    @Setter
-    @Getter
     private Config config;
+
+    public void setPathStart(String pathStart) {
+        this.pathStart = pathStart;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
+    public S3StorageService() {
+        log.info("注册S3Storage");
+    }
+
+    @Override
+    public String getPathStart() {
+        return pathStart;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
     /**
      * S3客户端
      */
@@ -149,6 +165,7 @@ public class S3StorageService implements StorageService {
                 ret.add(deleteError.message());
             } catch (ErrorResponseException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException | InsufficientDataException e) {
                 log.error("S3StorageService-->delete storage file fail",e);
+                e.printStackTrace();
             }
         }
         return  ret;
