@@ -55,7 +55,6 @@ public interface StorageService {
      * 删除存储
      *
      * @param objName 存储名称
-     * @return 是否成功
      * @throws BizException 失败信息
      */
     default void delete(String objName) throws BizException {

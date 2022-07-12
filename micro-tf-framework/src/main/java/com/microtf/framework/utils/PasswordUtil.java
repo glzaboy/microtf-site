@@ -9,7 +9,6 @@ import java.util.Random;
 /**
  * 密码生成和验证
  * @author glzaboy
- * @date 2022/01/20
  * @version 1.0
  */
 public class PasswordUtil {
