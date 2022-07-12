@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author guliuzhong
  */
-public interface NavRepository extends JpaRepository<NavEntity, Integer> {
+public interface NavRepository extends JpaRepository<NavEntity, Long> {
 }

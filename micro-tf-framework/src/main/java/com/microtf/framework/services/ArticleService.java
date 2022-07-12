@@ -67,7 +67,7 @@ public class ArticleService {
     public CategoryEntity saveCategory(@NotNull CategoryDto categoryDto, @NotNull SiteEntity siteEntity) {
         CategoryEntity categoryExample = new CategoryEntity();
         if(categoryDto.getId()==null){
-            categoryExample.setId(-1);
+            categoryExample.setId(-1L);
         }else{
             categoryExample.setId(categoryDto.getId());
         }
@@ -86,7 +86,7 @@ public class ArticleService {
         categoryEntity.setUpdateTime(new Date());
         return categoryRepository.save(categoryEntity);
     }
-    public void delCategory(@NotNull Integer id, @NotNull SiteEntity siteEntity) {
+    public void delCategory(@NotNull Long id, @NotNull SiteEntity siteEntity) {
         Optional<CategoryEntity> one = categoryRepository.findById(id);
         if(one.isEmpty()){
             throw new BizException("没有权限删除。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
@@ -119,14 +119,13 @@ public class ArticleService {
         if(byId.isEmpty()){
             throw new BizException("内容不存在。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
-        ArticleEntity articleEntity = byId.get();
-        return articleEntity;
+        return byId.get();
     }
     @Transactional(rollbackOn = {BizException.class})
     public ArticleEntity saveArticle(@NotNull ArticleDto articleDto, @NotNull SiteEntity siteEntity) {
         ArticleEntity articleEntityExample = new ArticleEntity();
         if(articleDto.getId()==null){
-            articleEntityExample.setId(-1);
+            articleEntityExample.setId(-1L);
         }else{
             articleEntityExample.setId(articleDto.getId());
         }

@@ -20,7 +20,7 @@ public class ArticleDto implements Serializable {
      * Id
      */
     @ApiModelProperty(value = "ID")
-    Integer id;
+    Long id;
     /**
      * 名称
      */
@@ -35,7 +35,7 @@ public class ArticleDto implements Serializable {
     /**
      * 类目ID
      */
-    List<Integer> categoryId=new ArrayList<>();
+    List<Long> categoryId=new ArrayList<>();
 
     List<CategoryDto> categoryDtoList=new ArrayList<>();
 

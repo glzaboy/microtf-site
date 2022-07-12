@@ -1,5 +1,6 @@
 package com.microtf.framework.jpa.entity;
 
+import com.microtf.framework.jpa.AuditEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
@@ -17,11 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class ArticleEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    private Integer id;
+public class ArticleEntity extends AuditEntity {
     /**
      * 标题
      */

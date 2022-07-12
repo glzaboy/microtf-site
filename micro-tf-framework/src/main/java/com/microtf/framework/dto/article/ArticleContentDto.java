@@ -15,7 +15,7 @@ public class ArticleContentDto implements Serializable {
      * Id
      */
     @ApiModelProperty(value = "ID")
-    Integer contentId;
+    Long contentId;
     /**
      * 启用
      */

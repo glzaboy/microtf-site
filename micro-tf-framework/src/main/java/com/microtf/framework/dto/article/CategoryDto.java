@@ -17,7 +17,7 @@ public class CategoryDto implements Serializable {
      * Id
      */
     @ApiModelProperty(value = "ID")
-    Integer id;
+    Long id;
     /**
      * 名称
      */

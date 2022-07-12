@@ -80,7 +80,7 @@ public class ArticleController {
     @RequestMapping(value = "/delCategory", method = {RequestMethod.POST}, produces = {"application/json"})
     @ApiResponse(code = 200, message = "删除类目")
     @ApiOperation(value = "删除类目", notes = "删除类目")
-    public Response<String> delCategory(@RequestParam Integer id) {
+    public Response<String> delCategory(@RequestParam Long id) {
         SiteEntity currentSite = siteService.getCurrentSite();
         if (currentSite == null || currentSite.getId() == null) {
             throw new BizException("用户还未设置站点。", BaseResponse.ErrorShowType.ERROR_MESSAGE);

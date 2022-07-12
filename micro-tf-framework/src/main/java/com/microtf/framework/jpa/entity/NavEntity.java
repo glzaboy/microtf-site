@@ -1,5 +1,6 @@
 package com.microtf.framework.jpa.entity;
 
+import com.microtf.framework.jpa.AuditEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
@@ -15,14 +16,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class NavEntity {
-    /**
-     * Id
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    Integer id;
+public class NavEntity extends AuditEntity {
     /**
      * 名称
      */
