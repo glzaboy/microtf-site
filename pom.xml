@@ -12,7 +12,7 @@
     <groupId>com.microtf</groupId>
     <artifactId>microtf-parent</artifactId>
     <name>micro-tf</name>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>
@@ -40,18 +40,19 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>com.microtf</groupId>
                 <artifactId>micro-tf-framework</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>0.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.microtf</groupId>
                 <artifactId>microt-tf-common</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>0.0.2-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.auth0</groupId>

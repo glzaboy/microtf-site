@@ -93,7 +93,7 @@ public class ArticleController {
     @RequestMapping(value = "/getArticle", method = {RequestMethod.GET}, produces = {"application/json"})
     @ApiResponse(code = 200, message = "获取单篇文章")
     @ApiOperation(value = "获取单篇文章", notes = "获取单篇文章")
-    public Response<ArticleDto> getArticle(@RequestParam Integer id) {
+    public Response<ArticleDto> getArticle(@RequestParam Long id) {
         SiteEntity currentSite = siteService.getCurrentSite();
         if (currentSite == null || currentSite.getId() == null) {
             throw new BizException("用户还未设置站点。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
@@ -115,7 +115,7 @@ public class ArticleController {
     @RequestMapping(value = "/getArticle2", method = {RequestMethod.GET}, produces = {"application/json"})
     @ApiResponse(code = 200, message = "获取单篇文章")
     @ApiOperation(value = "获取单篇文章", notes = "获取单篇文章")
-    public Response<ArticleDto> getArticle2(@RequestParam Integer id) {
+    public Response<ArticleDto> getArticle2(@RequestParam Long id) {
         ArticleEntity article = articleService.getArticleById(id);
         return ResponseUtil.responseData(article, (item) -> {
             ArticleDto n = new ArticleDto();
@@ -188,7 +188,7 @@ public class ArticleController {
     @RequestMapping(value = "/delArticle", method = {RequestMethod.POST}, produces = {"application/json"})
     @ApiResponse(code = 200, message = "删除文章")
     @ApiOperation(value = "删除文章", notes = "删除文章")
-    public Response<String> delArticle(@RequestParam Integer id) {
+    public Response<String> delArticle(@RequestParam Long id) {
         SiteEntity currentSite = siteService.getCurrentSite();
         if (currentSite == null || currentSite.getId() == null) {
             throw new BizException("用户还未设置站点。", BaseResponse.ErrorShowType.ERROR_MESSAGE);

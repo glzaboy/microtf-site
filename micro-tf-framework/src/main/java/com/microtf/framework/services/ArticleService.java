@@ -103,7 +103,7 @@ public class ArticleService {
         }
 
     }
-    public ArticleEntity getArticle(@NotNull SiteEntity siteEntity,@NotNull Integer id) {
+    public ArticleEntity getArticle(@NotNull SiteEntity siteEntity,@NotNull Long id) {
         Optional<ArticleEntity> byId = articleRepository.findById(id);
         if(byId.isEmpty()){
             throw new BizException("内容不存在。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
@@ -114,7 +114,7 @@ public class ArticleService {
         }
         return articleEntity;
     }
-    public ArticleEntity getArticleById(@NotNull Integer id) {
+    public ArticleEntity getArticleById(@NotNull Long id) {
         Optional<ArticleEntity> byId = articleRepository.findById(id);
         if(byId.isEmpty()){
             throw new BizException("内容不存在。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
@@ -162,7 +162,7 @@ public class ArticleService {
         return articleRepository.findAll(Example.of(articleEntityExample),
                 PageRequest.of(requestArticleList.getPage().getCurrent() - 1, requestArticleList.getPage().getPageSize(), Sort.by(new Sort.Order(Sort.Direction.DESC,"updateTime"))));
     }
-    public void delArticle(@NotNull Integer id, @NotNull SiteEntity siteEntity) {
+    public void delArticle(@NotNull Long id, @NotNull SiteEntity siteEntity) {
         Optional<ArticleEntity> byId = articleRepository.findById(id);
         if(byId.isEmpty()){
             throw new BizException("没有权限删除。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
