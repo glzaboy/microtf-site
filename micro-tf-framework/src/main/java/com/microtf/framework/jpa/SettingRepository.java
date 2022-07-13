@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author <a href="mailto:glzaboy@163.com">glzaboy@163.com</a>
  */
-public interface SettingRepository extends JpaRepository<SettingEntity, Integer> {
+public interface SettingRepository extends JpaRepository<SettingEntity, Long> {
 }

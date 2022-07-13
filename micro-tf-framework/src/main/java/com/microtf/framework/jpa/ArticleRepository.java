@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author guliuzhong
  */
-public interface ArticleRepository extends JpaRepository<ArticleEntity, Integer> {
+public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
 }
