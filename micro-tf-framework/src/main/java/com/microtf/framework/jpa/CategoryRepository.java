@@ -10,11 +10,11 @@ import java.util.List;
  *
  * @author guliuzhong
  */
-public interface CategoryRepository extends JpaRepository<CategoryEntity, Integer> {
+public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
     /**
      * 通过分类进行筛选
      * @param categoryIds 分类ID
      * @return 数据库中的分类
      */
-    List<CategoryEntity> findAllByIdIn(List<Integer> categoryIds);
+    List<CategoryEntity> findAllByIdIn(List<Long> categoryIds);
 }

@@ -1,7 +1,7 @@
 package com.microtf.framework.autoconfigure;
 
 import com.auth0.jwt.JWT;
-import com.microtf.framework.aop.LoginAop;
+import com.microtf.framework.compontent.LoginAop;
 import com.microtf.framework.services.JwtService;
 import com.microtf.framework.services.LoginAuth;
 import com.microtf.framework.services.LoginService;

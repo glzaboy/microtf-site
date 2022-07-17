@@ -1,12 +1,12 @@
 package com.microtf.framework.jpa;
 
-import com.microtf.framework.jpa.entity.UserEntity;
+import com.microtf.framework.jpa.entity.SettingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * 用户Jpa
+ * 设置
  *
  * @author <a href="mailto:glzaboy@163.com">glzaboy@163.com</a>
  */
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface SettingRepository extends JpaRepository<SettingEntity, Long> {
 }

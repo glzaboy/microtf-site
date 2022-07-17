@@ -1,5 +1,6 @@
 package com.microtf.framework.jpa.entity;
 
+import com.microtf.framework.jpa.AuditEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
@@ -16,14 +17,7 @@ import java.util.Date;
 @Entity
 @Getter
 @Setter
-public class CategoryEntity {
-    /**
-     * Id
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    Integer id;
+public class CategoryEntity extends AuditEntity {
     @Column(length = 30)
     String name;
     /**

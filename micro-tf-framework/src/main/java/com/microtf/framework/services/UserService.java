@@ -57,7 +57,7 @@ public class UserService {
      * @return 用户存储
      */
     public Optional<UserEntity> getUserEntity(String userId) {
-        return userRepository.findById(Integer.valueOf(userId));
+        return userRepository.findById(Long.valueOf(userId));
     }
 
     /**

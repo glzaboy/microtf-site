@@ -1,5 +1,6 @@
 package com.microtf.framework.jpa.entity;
 
+import com.microtf.framework.jpa.AuditEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
@@ -15,16 +16,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class SiteEntity {
-    /**
-     * 主键
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    @Column(nullable = false)
-    @Comment("主键")
-    private Long id;
+public class SiteEntity extends AuditEntity {
 
     /**
      * 绘本馆名称30个字符

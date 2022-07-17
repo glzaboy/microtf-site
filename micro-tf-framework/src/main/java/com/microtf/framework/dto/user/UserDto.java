@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Data
 public class UserDto implements Serializable {
-    Integer id;
+    Long id;
     /**
      * 显示名
      */
