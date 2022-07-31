@@ -19,17 +19,10 @@ public class StorageManagerService implements BeanFactoryAware {
         this.beanFactory=beanFactory;
     }
 
-    private List<StorageService> storageServiceList;
-
-    @Autowired(required = false)
-    public void setStorageServiceList(List<StorageService> storageServiceList) {
-        this.storageServiceList = storageServiceList;
-    }
-
     /**
      * 选择存储
-     * @param objName
-     * @return
+     * @param objName 存储名称
+     * @return 存储引擎
      */
     public Optional<StorageService> selectStorage(String objName){
         ListableBeanFactory beanFactory = (ListableBeanFactory) this.beanFactory;

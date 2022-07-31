@@ -27,10 +27,27 @@ public class ResponseUtil {
      * @return 错误信息
      */
     public static Response<String> responseError(String  errorMsg, BaseResponse.ErrorShowType errorShowType) {
-        Response<String> bizResponse=new Response<>();
+//        Response<String> bizResponse=new Response<>();
+//        bizResponse.setSuccess(false);
+//        bizResponse.setErrorMessage(errorMsg);
+//        bizResponse.setData("");
+//        bizResponse.setShowType(errorShowType.getErrorType());
+//        bizResponse.setErrorCode("1");
+        return responseError(errorMsg,errorShowType,String.class);
+    }
+    /**
+     * 返回出错信息
+     * @param errorMsg 错误信息
+     * @param errorShowType 提示类型
+     * @param classiz
+     * @param <T>
+     * @return 错误信息
+     */
+    public static<T extends Serializable> Response<T> responseError(String  errorMsg, BaseResponse.ErrorShowType errorShowType,Class<T> classiz) {
+        Response<T> bizResponse=new Response<>();
         bizResponse.setSuccess(false);
         bizResponse.setErrorMessage(errorMsg);
-        bizResponse.setData("");
+        bizResponse.setData(null);
         bizResponse.setShowType(errorShowType.getErrorType());
         bizResponse.setErrorCode("1");
         return bizResponse;

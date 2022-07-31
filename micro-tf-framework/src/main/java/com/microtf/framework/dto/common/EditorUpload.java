@@ -1,8 +1,8 @@
 package com.microtf.framework.dto.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -11,6 +11,7 @@ import java.io.Serializable;
  * @author glzaboy
  */
 @Data
+@Builder
 public class EditorUpload implements Serializable {
     @JsonProperty("url")
     private String url;

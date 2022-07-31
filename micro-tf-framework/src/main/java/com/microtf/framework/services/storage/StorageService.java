@@ -6,7 +6,6 @@ import com.microtf.framework.exceptions.BizException;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -23,7 +22,7 @@ public interface StorageService {
      * @return 存储信息
      * @throws BizException 失败信息
      */
-    default StorageObject upload(byte[] data, String objName) throws BizException {
+    default StorageObject upload(byte[] data, String objName,String contentType) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
 
@@ -47,7 +46,7 @@ public interface StorageService {
      * @return 存储信息
      * @throws BizException 失败信息
      */
-    default StorageObject upload(InputStream inputStream, String objName) throws BizException {
+    default StorageObject upload(InputStream inputStream, String objName,String contentType) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
 

@@ -74,9 +74,9 @@ public class S3StorageService implements StorageService {
         return minioClient;
     }
     @Override
-    public StorageObject upload(byte[] data, String objName) throws BizException {
+    public StorageObject upload(byte[] data, String objName,String contentType) throws BizException {
         ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(data);
-        return upload(byteArrayInputStream,objName);
+        return upload(byteArrayInputStream,objName,contentType);
     }
     @Override
     public StorageObject upload(URI url, String objName) throws BizException {
@@ -118,12 +118,14 @@ public class S3StorageService implements StorageService {
     }
 
     @Override
-    public StorageObject upload(InputStream inputStream, String objName) throws BizException {
+    public StorageObject upload(InputStream inputStream, String objName,String contentType) throws BizException {
         try(BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)){
             PutObjectArgs.Builder builder = PutObjectArgs.builder();
             builder.bucket(config.getBucket());
             builder.object(objName);
-            String contentType = URLConnection.guessContentTypeFromName(objName);
+            if(contentType==null){
+                contentType = URLConnection.guessContentTypeFromName(objName);
+            }
             if(contentType==null){
                 contentType=URLConnection.guessContentTypeFromStream(bufferedInputStream);
             }
