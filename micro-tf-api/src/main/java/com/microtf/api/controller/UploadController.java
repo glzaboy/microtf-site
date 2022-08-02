@@ -4,6 +4,7 @@ import com.microtf.framework.dto.BaseResponse;
 import com.microtf.framework.dto.Response;
 import com.microtf.framework.dto.common.EditorUpload;
 import com.microtf.framework.dto.storage.StorageObject;
+import com.microtf.framework.exceptions.BizException;
 import com.microtf.framework.services.storage.StorageManagerService;
 import com.microtf.framework.services.storage.StorageService;
 import com.microtf.framework.utils.ResponseUtil;
@@ -51,10 +52,10 @@ public class UploadController {
                 return ResponseUtil.responseData(builder.build());
             } catch (IOException e) {
                 log.error("上传出错");
-                return ResponseUtil.responseError("上传出错"+e.getMessage(), BaseResponse.ErrorShowType.NOTIFICATION,EditorUpload.class);
+                throw new BizException("上传出错"+e.getMessage(), BaseResponse.ErrorShowType.ERROR_MESSAGE);
             }
         }else {
-            return ResponseUtil.responseError("上传出错", BaseResponse.ErrorShowType.NOTIFICATION,EditorUpload.class);
+            throw new BizException("上传出错", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
     }
 }

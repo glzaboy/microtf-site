@@ -54,7 +54,7 @@ public class ArticleController {
     public ResponsePage<CategoryDto> getCategory(@Validated @RequestBody RequestCategory requestCategory) {
         SiteEntity currentSite = siteService.getCurrentSite();
         Page<CategoryEntity> list = articleService.getCategory(requestCategory, currentSite);
-        return ResponseUtil.responseData(list, CategoryDto.class);
+        return ResponseUtil.responseAsPage(list, CategoryDto.class);
     }
 
     /**
@@ -167,7 +167,7 @@ public class ArticleController {
     public ResponsePage<ArticleDto> getArticleList(@Validated @RequestBody RequestArticleList requestArticleList) {
         SiteEntity currentSite = siteService.getCurrentSite();
         Page<ArticleEntity> articleList = articleService.getArticleList(requestArticleList, currentSite);
-        return ResponseUtil.responseDataPage(articleList, (item) -> {
+        return ResponseUtil.responseAsPage(articleList, (item) -> {
             ArticleDto n = new ArticleDto();
             BeanUtils.copyProperties(item, n);
             SiteDto siteDto = new SiteDto();
