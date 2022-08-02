@@ -1,5 +1,6 @@
 package com.microtf.framework.dto;
 
+import com.microtf.framework.dto.common.ResponseList;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -16,12 +17,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(value = "PageData",description = "带分页的数据")
-public class ResponsePage <T extends Serializable> extends BaseResponse implements Serializable{
-    /**
-     * 数据列表
-     */
-    @ApiModelProperty(value = "列表数据")
-    List<T> data;
+public class ResponsePage <T extends Serializable> extends ResponseList<T> {
     /**
      * 当前页码
      */

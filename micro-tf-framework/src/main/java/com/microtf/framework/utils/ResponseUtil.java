@@ -3,6 +3,7 @@ package com.microtf.framework.utils;
 import com.microtf.framework.dto.BaseResponse;
 import com.microtf.framework.dto.Response;
 import com.microtf.framework.dto.ResponsePage;
+import com.microtf.framework.dto.common.ResponseList;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -39,8 +40,8 @@ public class ResponseUtil {
      * 返回出错信息
      * @param errorMsg 错误信息
      * @param errorShowType 提示类型
-     * @param classiz
-     * @param <T>
+     * @param classiz 返回数据类型
+     * @param <T> 返回数据类型
      * @return 错误信息
      */
     public static<T extends Serializable> Response<T> responseError(String  errorMsg, BaseResponse.ErrorShowType errorShowType,Class<T> classiz) {
@@ -62,22 +63,10 @@ public class ResponseUtil {
         return responseError(errorMsg,Response.ErrorShowType.ERROR_MESSAGE);
     }
     public static<T extends Serializable> Response<T> responseData(T  data) {
-        Response<T> bizResponse=new Response<>();
-        bizResponse.setSuccess(true);
-        bizResponse.setData(data);
-        bizResponse.setShowType(Response.ErrorShowType.REDIRECT.getErrorType());
-        bizResponse.setErrorCode("1");
-        return bizResponse;
+        return responseData(data,(item)->item);
     }
     public static<T,S extends Serializable> Response<S> responseData(T  data, Class<S> clazz) {
-        Response<S> bizResponse=new Response<>();
-        bizResponse.setSuccess(true);
-        S s = BeanUtils.instantiateClass(clazz);
-        BeanUtils.copyProperties(data,s);
-        bizResponse.setData(s);
-        bizResponse.setShowType(Response.ErrorShowType.REDIRECT.getErrorType());
-        bizResponse.setErrorCode("1");
-        return bizResponse;
+        return responseData(data,(item)->{S s= BeanUtils.instantiateClass(clazz);BeanUtils.copyProperties(item,s);return s;});
     }
 
     public static<T,S extends Serializable> Response<S> responseData(T  data, Function<T,S> function) {
@@ -89,24 +78,25 @@ public class ResponseUtil {
         bizResponse.setErrorCode("1");
         return bizResponse;
     }
-    public static<T,S extends Serializable> ResponsePage<S> responseData(Page<T> data, Class<S> clazz) {
-        ResponsePage<S> bizResponse=new ResponsePage<>();
+    public static<T,S extends Serializable> ResponseList<S> responseAsList(List<T> data, Class<S> clazz) {
+        return responseAsList(data,(item)->{S s= BeanUtils.instantiateClass(clazz);BeanUtils.copyProperties(item,s);return s;});
+    }
+    public static<T,S extends Serializable> ResponseList<S> responseAsList(List<T> data, Function<T,S> function) {
+        ResponseList<S> bizResponse=new ResponseList<>();
         bizResponse.setSuccess(true);
-        bizResponse.setTotal(data.getTotalElements());
-        bizResponse.setCurrent(data.getPageable().getPageNumber());
-        bizResponse.setPageSize(data.getPageable().getPageSize());
-        List<T> content = data.getContent();
         List<S> dataList=new ArrayList<>();
-        for (T item:content){
-            S s= BeanUtils.instantiateClass(clazz);
-            BeanUtils.copyProperties(item,s);
-            dataList.add(s);
+        for (T item:data){
+            S apply = function.apply(item);
+            dataList.add(apply);
         }
         bizResponse.setData(dataList);
         bizResponse.setErrorCode("1");
         return bizResponse;
     }
-    public static<T,S extends Serializable> ResponsePage<S> responseDataPage(Page<T> data, Function<T,S> function) {
+    public static<T,S extends Serializable> ResponsePage<S> responseAsPage(Page<T> data, Class<S> clazz) {
+        return responseAsPage(data,(item)->{S s= BeanUtils.instantiateClass(clazz);BeanUtils.copyProperties(item,s);return s;});
+    }
+    public static<T,S extends Serializable> ResponsePage<S> responseAsPage(Page<T> data, Function<T,S> function) {
         ResponsePage<S> bizResponse=new ResponsePage<>();
         bizResponse.setSuccess(true);
         bizResponse.setTotal(data.getTotalElements());
