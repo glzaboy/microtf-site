@@ -28,12 +28,6 @@ public class ResponseUtil {
      * @return 错误信息
      */
     public static Response<String> responseError(String  errorMsg, BaseResponse.ErrorShowType errorShowType) {
-//        Response<String> bizResponse=new Response<>();
-//        bizResponse.setSuccess(false);
-//        bizResponse.setErrorMessage(errorMsg);
-//        bizResponse.setData("");
-//        bizResponse.setShowType(errorShowType.getErrorType());
-//        bizResponse.setErrorCode("1");
         return responseError(errorMsg,errorShowType,String.class);
     }
     /**
