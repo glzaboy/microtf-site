@@ -4,9 +4,9 @@ import com.microtf.framework.jpa.AuditEntity;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 /**
  * 站点设置
