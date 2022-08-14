@@ -62,11 +62,12 @@ public class SettingService {
         settingEntity.setName(name);
         settingEntity.setClassName(classic.getCanonicalName());
         List<SettingEntity> all = settingRepository.findAll(Example.of(settingEntity));
-        if(all.size() != 1){
+        if(all.size() > 1){
             throw new BizException("配置文件不止一个无法进行处理");
         }
-        SettingEntity settingEntity1 = all.get(0);
-        if (settingEntity1.getClassName().equals(classic.getCanonicalName())) {
+        Optional<SettingEntity> settingEntityOptional = all.stream().findFirst();
+        SettingEntity settingEntity1 = settingEntityOptional.orElseGet(SettingEntity::new);
+        if (classic.getCanonicalName().equals(settingEntity1.getClassName())) {
             try {
                 return objectMapper.readValue(settingEntity1.getValue(), classic);
             } catch (IOException e) {
