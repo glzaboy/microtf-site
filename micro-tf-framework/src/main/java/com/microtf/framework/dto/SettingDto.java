@@ -1,5 +1,8 @@
 package com.microtf.framework.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -8,4 +11,7 @@ import java.io.Serializable;
  */
 @SuppressWarnings("unused")
 public class SettingDto implements Serializable {
+    @Getter
+    @Setter
+    Boolean read;
 }
