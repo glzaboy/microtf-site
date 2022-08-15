@@ -69,7 +69,9 @@ public class SettingService {
         SettingEntity settingEntity1 = settingEntityOptional.orElseGet(SettingEntity::new);
         if (classic.getCanonicalName().equals(settingEntity1.getClassName())) {
             try {
-                return objectMapper.readValue(settingEntity1.getValue(), classic);
+                T t = objectMapper.readValue(settingEntity1.getValue(), classic);
+                t.setRead(true);
+                return t;
             } catch (IOException e) {
                 throw new BizException(e.getMessage());
             }

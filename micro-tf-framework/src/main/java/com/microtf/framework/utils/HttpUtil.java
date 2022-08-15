@@ -48,7 +48,7 @@ public class HttpUtil {
     @Data
     @Builder
     public static class HttpRequest {
-        private Method method= Method.GET;
+        private Method method;
         private String url;
         private Map<String,String> query;
         private Map<String,String> pathVar;
@@ -69,7 +69,9 @@ public class HttpUtil {
         public <T> T json(Class<T> classic){
             ObjectMapper objectMapper=new ObjectMapper();
             try {
-                return objectMapper.readValue(body,classic);
+                T t = objectMapper.readValue(body, classic);
+                log.info("json数据{},对象{}",new String(body),t);
+                return t;
             } catch (IOException e) {
                 log.error("转换Json出错{}",e.getMessage());
                 throw new BizException("转换Json出错");
@@ -109,7 +111,7 @@ public class HttpUtil {
          * 文件mime
          * 如果空则默认为 application/octet-stream
          */
-        private String contentType="application/octet-stream";
+        private String contentType;
     }
     public static Map<String,String> object2Map(Object param){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -200,6 +202,9 @@ public class HttpUtil {
             }else{
                 builder.addHeader("Authorization",apply.getAuthValue());
             }
+        }
+        if(Objects.isNull(httpRequest.getMethod())){
+            httpRequest.setMethod(Method.GET);
         }
         switch (httpRequest.getMethod()){
             case FORM:

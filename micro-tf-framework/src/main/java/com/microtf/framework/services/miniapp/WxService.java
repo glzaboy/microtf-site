@@ -18,7 +18,7 @@ public class WxService {
     public void setSettingService(SettingService settingService) {
         this.settingService = settingService;
     }
-    public String LOGIN_URL="https://api.weixin.qq.com/sns/jscode2session?&js_code=JSCODE&grant_type=authorization_code";
+    public String LOGIN_URL="https://api.weixin.qq.com/sns/jscode2session?grant_type=authorization_code";
 
     public WxLogin login(String appId, String code) {
         WxAppInfo setting = settingService.getSetting(appId, WxAppInfo.class);
@@ -33,7 +33,9 @@ public class WxService {
         opt.put("js_code",code);
         builder.query(opt);
         HttpUtil.HttpResponse sent = HttpUtil.sent(builder.build());
-        WxLogin json = sent.json(WxLogin.class);
-        return json;
+        return sent.json(WxLogin.class);
+    }
+    private <T extends WxLogin>void checkResponse(){
+
     }
 }
