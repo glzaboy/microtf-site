@@ -3,6 +3,7 @@ package com.microtf.api.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.microtf.framework.dto.miniapp.MiniAppLoginResponse;
+import com.microtf.framework.dto.miniapp.WxLogin;
 import com.microtf.framework.services.miniapp.WxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,12 @@ public class WxController {
 
     @RequestMapping("login")
     public MiniAppLoginResponse login(@RequestParam String code, @RequestParam String appId) {
-        String login = wxService.login(appId, code);
+        WxLogin login = wxService.login(appId, code);
         MiniAppLoginResponse miniAppLoginResponse=new MiniAppLoginResponse();
-        miniAppLoginResponse.setOpenId(login);
-        String sign = JWT.create().withClaim("openId", login).withClaim("appId", appId).sign(Algorithm.HMAC256("123456"));
+        miniAppLoginResponse.setOpenId(login.getOpenId());
+        String sign = JWT.create().withClaim("openId", login.getOpenId()).withClaim("appId", appId).sign(Algorithm.HMAC256("123456"));
         miniAppLoginResponse.setJwtPayload(sign);
-        miniAppLoginResponse.setOpenId(login);
+        miniAppLoginResponse.setOpenId(login.getOpenId());
         return miniAppLoginResponse;
     }
 }
