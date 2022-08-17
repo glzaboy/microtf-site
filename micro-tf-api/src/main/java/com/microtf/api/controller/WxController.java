@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("wxv2")
 @Slf4j
@@ -27,7 +29,8 @@ public class WxController {
         WxLogin login = wxService.login(appId, code);
         MiniAppLoginResponse miniAppLoginResponse=new MiniAppLoginResponse();
         miniAppLoginResponse.setOpenId(login.getOpenId());
-        String sign = JWT.create().withClaim("openId", login.getOpenId()).withClaim("appId", appId).sign(Algorithm.HMAC256("123456"));
+        Date expTime = new Date(System.currentTimeMillis() + 86400*1000L);
+        String sign = JWT.create().withClaim("openId", login.getOpenId()).withClaim("appId", appId).withExpiresAt(expTime).sign(Algorithm.HMAC256("123456"));
         miniAppLoginResponse.setJwtPayload(sign);
         miniAppLoginResponse.setOpenId(login.getOpenId());
         return miniAppLoginResponse;

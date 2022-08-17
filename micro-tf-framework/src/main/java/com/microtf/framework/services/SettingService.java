@@ -40,7 +40,6 @@ public class SettingService {
 
     public <T extends SettingDto> Map<String,T> getSettingByClass(Class<T> classic) {
         SettingEntity settingEntity = new SettingEntity();
-//        settingEntity.setName(name);
         settingEntity.setClassName(classic.getCanonicalName());
         List<SettingEntity> all = settingRepository.findAll(Example.of(settingEntity));
         Map<String,T> settings=new HashMap<>(16);

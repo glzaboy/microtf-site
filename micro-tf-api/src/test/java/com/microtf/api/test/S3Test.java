@@ -9,6 +9,7 @@ import com.microtf.framework.jpa.entity.CategoryEntity;
 import com.microtf.framework.services.ArticleService;
 import com.microtf.framework.services.SiteService;
 import com.microtf.framework.services.storage.StorageManagerService;
+import com.microtf.framework.services.storage.StorageService;
 import com.microtf.framework.utils.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.ServiceLoader;
 
 @SpringBootTest(classes = Application.class)
 @Slf4j
@@ -61,5 +63,13 @@ public class S3Test {
         List<CategoryEntity> all = categoryRepository.findAll();
         ResponseList<CategoryDto> listResponseList = ResponseUtil.responseAsList(all, CategoryDto.class);
         log.info(String.valueOf(listResponseList));
+    }
+    @Test
+    public void test4(){
+        ServiceLoader<StorageService> load = ServiceLoader.load(StorageService.class);
+//        log.info(load);
+        for (StorageService item:load){
+            System.out.println(item);
+        }
     }
 }

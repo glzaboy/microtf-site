@@ -12,25 +12,28 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.util.StringUtils;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class HttpUtil {
     private static final String URL_START = "?";
     private static final String URL_SPLIT = "&";
     private static final String SCHEME_FILE = "file://";
-    private static  OkHttpClient.Builder okhttpBuild=new OkHttpClient.Builder();
+    private static final OkHttpClient.Builder okhttpBuild=new OkHttpClient.Builder();
     public enum Method {
         JSON, FORM, FILE, DELETE, GET, PUT, HEAD,PATCH
     }
@@ -117,7 +120,7 @@ public class HttpUtil {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String requestJsonStr = objectMapper.writeValueAsString(param);
-            return objectMapper.readValue(requestJsonStr, new TypeReference<>() {
+            return objectMapper.readValue(requestJsonStr, new TypeReference<Map<String, String>>() {
             });
         } catch (JsonProcessingException e) {
             return Collections.emptyMap();
