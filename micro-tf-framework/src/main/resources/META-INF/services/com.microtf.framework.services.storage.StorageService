@@ -1,2 +1,2 @@
 com.microtf.framework.services.storage.S3StorageService
-com.microtf.framework.services.storage.FeishuService
+com.microtf.framework.services.storage.FeishuStorageService

@@ -39,7 +39,7 @@ public class HttpUtil {
     }
 
     public static OkHttpClient getClient(){
-        return getClient(false,3);
+        return getClient(false,10);
     }
     public static OkHttpClient getClient(boolean retry,int timeOut){
         okhttpBuild.writeTimeout(timeOut, TimeUnit.SECONDS);

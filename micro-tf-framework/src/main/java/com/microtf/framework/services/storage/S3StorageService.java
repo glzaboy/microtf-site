@@ -41,7 +41,6 @@ public class S3StorageService implements StorageService {
     }
 
     public S3StorageService() {
-        log.info("注册S3Storage");
     }
 
     @Override
