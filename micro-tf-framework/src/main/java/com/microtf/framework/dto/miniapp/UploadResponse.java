@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public  class MiniAppResponse {
-    private String errorCode;
-    private String errorMsg;
+public  class UploadResponse extends MiniAppResponse{
+    private String url;
+    private String id;
 }
