@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microtf.framework.exceptions.BizException;
+import kotlin.Pair;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -18,12 +19,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /**
@@ -62,13 +60,14 @@ public class HttpUtil {
         private Object postObject;
         private Map<String, File> postFile;
         private HttpAuth auth;
-        private BiFunction<String,String,HttpAuthReturn> authFunction;
+        private Function<HttpAuth,HttpAuthReturn> authFunction;
     }
     @Data
     @Builder
     public static class HttpResponse {
         private byte[] body;
         private Integer status;
+        private Map<String,String> headers;
         public String html(){
             return new String(body);
         }
@@ -89,6 +88,7 @@ public class HttpUtil {
     public static class HttpAuth{
         private String user;
         private String pwd;
+        private String openUserId;
     }
     @Getter
     @Setter
@@ -193,15 +193,15 @@ public class HttpUtil {
         return var;
     }
     @SuppressWarnings("unused")
-    public static BiFunction<String,String,HttpAuthReturn> httpBasic=(String user,String pwd)-> {
+    public static Function<HttpAuth,HttpAuthReturn> httpBasic=(HttpAuth httpAuth)-> {
         HttpAuthReturn httpAuthReturn=new HttpAuthReturn();
-        httpAuthReturn.setAuthValue(Credentials.basic(user, pwd));
+        httpAuthReturn.setAuthValue(Credentials.basic(httpAuth.getUser(), httpAuth.getPwd()));
         return httpAuthReturn;
     };
     @SuppressWarnings("unused")
-    public static BiFunction<String,String,HttpAuthReturn> httpBearValue=(String bearValue,String pwd)-> {
+    public static Function<HttpAuth,HttpAuthReturn> httpBearValue=(HttpAuth httpAuth)-> {
         HttpAuthReturn httpAuthReturn=new HttpAuthReturn();
-        httpAuthReturn.setAuthValue("Bearer "+bearValue);
+        httpAuthReturn.setAuthValue("Bearer "+httpAuth.getUser());
         return httpAuthReturn;
     };
 
@@ -209,7 +209,7 @@ public class HttpUtil {
         Request.Builder builder=new Request.Builder();
         builder.url(applyQuery(applyPathVar(httpRequest.getUrl(), httpRequest.getPathVar()), httpRequest.getQuery()));
         if(httpRequest.getAuthFunction()!=null && httpRequest.getAuth()!=null){
-            HttpAuthReturn apply = httpRequest.getAuthFunction().apply(httpRequest.getAuth().getUser(), httpRequest.getAuth().getPwd());
+            HttpAuthReturn apply = httpRequest.getAuthFunction().apply(httpRequest.getAuth());
             if(apply.requestParamName!=null){
                 Map<String, String> query = httpRequest.getQuery();
                 query.put(apply.getRequestParamName(),apply.getAuthValue());
@@ -297,6 +297,14 @@ public class HttpUtil {
         try {
             Response execute = okHttpClient.newCall(builder1.build()).execute();
             builder.status(execute.code());
+            Iterator<Pair<String, String>> iterator = execute.headers().iterator();
+            Map<String,String> headers=new HashMap<>();
+            for (;iterator.hasNext();){
+                Pair<String, String> next = iterator.next();
+                next.getFirst();
+                headers.put(next.getFirst(),next.getSecond());
+            }
+            builder.headers(headers);
             if(execute.isSuccessful()){
                 builder.body(execute.body().bytes());
                 return builder.build();
