@@ -4,16 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microtf.framework.exceptions.BizException;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -28,6 +26,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
+/**
+ * Http客户端，
+ * 基于okhttp进行二次封闭，更适合调用api
+ * @author glzaboy@163.com
+ */
 @Slf4j
 public class HttpUtil {
     private static final String URL_START = "?";
@@ -87,10 +90,10 @@ public class HttpUtil {
         private String user;
         private String pwd;
     }
-    @Builder
     @Getter
     @Setter
-    public static class HttpAuthReturn{
+    @NoArgsConstructor
+    public static class HttpAuthReturn implements Serializable {
         private String requestParamName;
         private String authValue;
     }
@@ -190,9 +193,17 @@ public class HttpUtil {
         return var;
     }
     @SuppressWarnings("unused")
-    public static BiFunction<String,String,HttpAuthReturn> httpBasic=(String user,String pwd)-> HttpAuthReturn.builder().authValue(Credentials.basic(user, pwd)).build();
+    public static BiFunction<String,String,HttpAuthReturn> httpBasic=(String user,String pwd)-> {
+        HttpAuthReturn httpAuthReturn=new HttpAuthReturn();
+        httpAuthReturn.setAuthValue(Credentials.basic(user, pwd));
+        return httpAuthReturn;
+    };
     @SuppressWarnings("unused")
-    public static BiFunction<String,String,HttpAuthReturn> httpBearValue=(String bearValue,String pwd)-> HttpAuthReturn.builder().authValue("Bearer "+ bearValue).build();
+    public static BiFunction<String,String,HttpAuthReturn> httpBearValue=(String bearValue,String pwd)-> {
+        HttpAuthReturn httpAuthReturn=new HttpAuthReturn();
+        httpAuthReturn.setAuthValue("Bearer "+bearValue);
+        return httpAuthReturn;
+    };
 
     private static Request.Builder buildHttp(HttpRequest httpRequest){
         Request.Builder builder=new Request.Builder();
