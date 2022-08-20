@@ -140,18 +140,18 @@ public class S3StorageService implements StorageService {
     }
 
     @Override
-    public void delete(String objName) throws BizException {
+    public void delete(String objectId) throws BizException {
         try {
-            getClient().removeObject(RemoveObjectArgs.builder().bucket(config.getBucket()).object(objName).build());
+            getClient().removeObject(RemoveObjectArgs.builder().bucket(config.getBucket()).object(objectId).build());
         } catch (ErrorResponseException | InternalException | InsufficientDataException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
             log.error("S3StorageService-->delete storage file fail",e);
             throw new BizException("删除文件失败");
         }
     }
     @Override
-    public List<String> delete(List<String> objNameList) throws BizException {
+    public List<String> delete(List<String> objectIdList) throws BizException {
         List<DeleteObject> strings = new ArrayList<>();
-        for(String item:objNameList){
+        for(String item:objectIdList){
             DeleteObject deleteObject=new DeleteObject(item);
             strings.add(deleteObject);
         }
@@ -173,12 +173,13 @@ public class S3StorageService implements StorageService {
     }
 
     @Override
-    public StorageObject getUrl(String objName) throws BizException {
+    public StorageObject getUrl(String objectId) throws BizException {
         StorageObject storageObject=new StorageObject();
-        storageObject.setObjectName(objName);
+        storageObject.setObjectName(objectId);
+        storageObject.setObjectId(objectId);
         if(config.getIsPrivate()){
             GetPresignedObjectUrlArgs.Builder builder = GetPresignedObjectUrlArgs.builder();
-            builder.bucket(config.getBucket()).object(objName).expiry(config.getExpiry(), TimeUnit.SECONDS).method(Method.GET);
+            builder.bucket(config.getBucket()).object(objectId).expiry(config.getExpiry(), TimeUnit.SECONDS).method(Method.GET);
             try {
                 storageObject.setUrl(getClient().getPresignedObjectUrl(builder.build()));
             } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | XmlParserException | ServerException e) {
@@ -186,18 +187,19 @@ public class S3StorageService implements StorageService {
                 throw new BizException("获取文件地址失败");
             }
         }else{
-            storageObject.setUrl(config.getUrlHost()+objName);
+            storageObject.setUrl(config.getUrlHost()+objectId);
         }
         return storageObject;
     }
 
     @Override
-    public StorageObjectStream getStream(String objName) throws BizException {
+    public StorageObjectStream getStream(String objectId) throws BizException {
         StorageObjectStream storageObjectStream=new StorageObjectStream();
-        storageObjectStream.setObjectName(objName);
+        storageObjectStream.setObjectName(objectId);
+        storageObjectStream.setObjectId(objectId);
         Map<String,String> metaData=new HashMap<>(16);
         GetObjectArgs.Builder builder = GetObjectArgs.builder();
-        builder.bucket(config.getBucket()).object(objName);
+        builder.bucket(config.getBucket()).object(objectId);
         try {
             GetObjectResponse object = getClient().getObject(builder.build());
             if (object != null) {

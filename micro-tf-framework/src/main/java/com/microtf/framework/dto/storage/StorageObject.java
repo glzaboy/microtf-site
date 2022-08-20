@@ -16,6 +16,10 @@ public class StorageObject {
      */
     private String objectName;
     /**
+     * 对象名称
+     */
+    private String objectId;
+    /**
      * 对象地址
      */
     private String url;

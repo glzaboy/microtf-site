@@ -17,6 +17,10 @@ public class StorageObjectStream {
      */
     private String objectName;
     /**
+     * 对象名称
+     */
+    private String objectId;
+    /**
      * 元数据
      */
     private Map<String,String> metaData;
