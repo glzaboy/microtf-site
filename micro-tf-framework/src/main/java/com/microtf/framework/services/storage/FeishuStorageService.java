@@ -9,7 +9,9 @@ import com.microtf.framework.services.storage.feishu.TokenInput;
 import com.microtf.framework.services.storage.feishu.UploadInfo;
 import com.microtf.framework.utils.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 
+import javax.annotation.Resource;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
 /**
@@ -49,17 +52,29 @@ public class FeishuStorageService implements StorageService {
         return config;
     }
 
-    public static BiFunction<String,String, HttpUtil.HttpAuthReturn> httpBearValue=(String user, String pwd)-> {
-        HttpUtil.HttpAuthReturn.HttpAuthReturnBuilder builder1 = HttpUtil.HttpAuthReturn.builder();
+    RedisTemplate<String, HttpUtil.HttpAuthReturn> redisTemplate;
+
+    @Resource
+    public void setRedisTemplate(RedisTemplate<String, HttpUtil.HttpAuthReturn> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    public BiFunction<String,String, HttpUtil.HttpAuthReturn> httpBearValue=(String user, String pwd)-> {
+        HttpUtil.HttpAuthReturn httpAuthReturn = redisTemplate.opsForValue().get(user + pwd);
+        if(httpAuthReturn!=null){
+            return httpAuthReturn;
+        }
+        HttpUtil.HttpAuthReturn httpAuthReturn1 = new HttpUtil.HttpAuthReturn();
         HttpUtil.HttpRequest.HttpRequestBuilder builder = HttpUtil.HttpRequest.builder();
         builder.url("https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal");
         builder.method(HttpUtil.Method.JSON).postObject(TokenInput.builder().appId(user).appSecret(pwd).build());
         HttpUtil.HttpResponse sent = HttpUtil.sent(builder.build());
-        if(sent.getStatus().intValue()==200){
+        if(sent.getStatus() ==200){
             Token json = sent.json(Token.class);
             if(json.getCode()==0){
-                builder1.authValue("Bearer "+json.getTenantAccessToken());
-                return builder1.build();
+                httpAuthReturn1.setAuthValue("Bearer "+json.getTenantAccessToken());
+                redisTemplate.opsForValue().set(user+pwd,httpAuthReturn1,json.getExpire()-1800, TimeUnit.SECONDS);
+                return httpAuthReturn1;
             }
             return null;
         }else {
