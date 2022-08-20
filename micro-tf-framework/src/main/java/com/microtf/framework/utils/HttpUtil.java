@@ -207,16 +207,19 @@ public class HttpUtil {
 
     private static Request.Builder buildHttp(HttpRequest httpRequest){
         Request.Builder builder=new Request.Builder();
-        builder.url(applyQuery(applyPathVar(httpRequest.getUrl(), httpRequest.getPathVar()), httpRequest.getQuery()));
         if(httpRequest.getAuthFunction()!=null && httpRequest.getAuth()!=null){
             HttpAuthReturn apply = httpRequest.getAuthFunction().apply(httpRequest.getAuth());
-            if(apply.requestParamName!=null){
-                Map<String, String> query = httpRequest.getQuery();
-                query.put(apply.getRequestParamName(),apply.getAuthValue());
-            }else{
-                builder.addHeader("Authorization",apply.getAuthValue());
+            if(!Objects.isNull(apply)){
+                if(apply.requestParamName!=null){
+                    Map<String, String> query = Optional.ofNullable(httpRequest.getQuery()).orElseGet(()->new HashMap<String,String>());
+                    query.put(apply.getRequestParamName(),apply.getAuthValue());
+                    httpRequest.setQuery(query);
+                }else{
+                    builder.addHeader("Authorization",apply.getAuthValue());
+                }
             }
         }
+        builder.url(applyQuery(applyPathVar(httpRequest.getUrl(), httpRequest.getPathVar()), httpRequest.getQuery()));
         if(Objects.isNull(httpRequest.getMethod())){
             httpRequest.setMethod(Method.GET);
         }
@@ -309,6 +312,7 @@ public class HttpUtil {
                 builder.body(execute.body().bytes());
                 return builder.build();
             }else{
+                log.error("请求出错，服务器返回{}",execute.body().string());
                 throw new BizException("Http请求出错"+execute.message());
             }
         } catch (IOException e) {

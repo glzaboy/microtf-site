@@ -189,6 +189,9 @@ public class FeishuStorageService implements StorageService {
         } catch (IOException e) {
             log.error("FeishuStorageService-->upload storage upload fail",e);
             throw new BizException("上传文件失败");
+        }catch (Exception e){
+            log.error("FeishuStorageService-->upload storage upload fail",e);
+            throw new BizException("上传文件失败");
         }
     }
 
