@@ -2,6 +2,7 @@ package com.microtf.framework.compontent;
 
 import com.microtf.framework.dto.login.LoginStateDto;
 import com.microtf.framework.services.LoginService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
@@ -17,9 +18,9 @@ class AuditorComponent implements AuditorAware<Long> {
         this.loginService = loginService;
     }
 
+    @NotNull
     @Override
     public Optional<Long> getCurrentAuditor() {
-        loginService.initLoginUser();
         LoginStateDto loginStateDto = loginService.getLoginStateDto();
         if(loginStateDto.getGuest()){
             return Optional.empty();
