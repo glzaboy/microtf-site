@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class WxService {
@@ -22,7 +23,7 @@ public class WxService {
 
     public WxLogin login(String appId, String code) {
         WxAppInfo setting = settingService.getSetting(appId, WxAppInfo.class);
-        if(!setting.getRead()){
+        if(Objects.isNull(setting.getRead())){
             throw new BizException("没有读取到配置");
         }
         HttpUtil.HttpRequest.HttpRequestBuilder builder=HttpUtil.HttpRequest.builder();

@@ -2,10 +2,7 @@ package com.microtf.framework.services.miniapp;
 
 import com.microtf.framework.exceptions.BizException;
 import com.microtf.framework.services.SettingService;
-import com.microtf.framework.services.miniapp.baiduAi.BaiduAiConfig;
-import com.microtf.framework.services.miniapp.baiduAi.PlantResult;
-import com.microtf.framework.services.miniapp.baiduAi.Token;
-import com.microtf.framework.services.miniapp.baiduAi.TokenInput;
+import com.microtf.framework.services.miniapp.baiduAi.*;
 import com.microtf.framework.utils.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,6 +30,7 @@ public class BaiduAiService {
     }
 
     public static final String AI_PLANT_URL ="https://aip.baidubce.com/rest/2.0/image-classify/v1/plant";
+    public static final String AI_OCR_URL ="https://aip.baidubce.com/rest/2.0/ocr/v1/general";
     public Function<HttpUtil.HttpAuth, HttpUtil.HttpAuthReturn> httpBearValue=(HttpUtil.HttpAuth httpAuth)-> {
         HttpUtil.HttpAuthReturn httpAuthReturn = redisTemplate.opsForValue().get("baiduAi"+httpAuth.getUser() + httpAuth.getPwd());
         if(httpAuthReturn!=null){
@@ -75,5 +73,28 @@ public class BaiduAiService {
         }
         return sent.json(PlantResult.class);
     }
+    public OcrResult getPicOcrText(String pictrureUrl){
+        BaiduAiConfig baiduAi = settingService.getSetting("baiduAi", BaiduAiConfig.class);
+        if(!baiduAi.getRead()){
+            throw new BizException("ai接口没有设置");
+        }
 
+        HttpUtil.HttpRequest.HttpRequestBuilder builder = HttpUtil.HttpRequest.builder();
+        builder.method(HttpUtil.Method.FORM);
+        Map<String,String> post =new HashMap<>();
+        post.put("detect_direction","true");
+        post.put("paragraph","true");
+        post.put("url",pictrureUrl);
+        builder.authFunction(httpBearValue);
+        builder.auth(HttpUtil.HttpAuth.builder().user(baiduAi.getClientId()).pwd(baiduAi.getClientSecret()).build());
+        HttpUtil.HttpResponse sent = HttpUtil.sent(builder.url(AI_OCR_URL).form(post).build());
+        if(sent.getStatus()!=200){
+            throw new BizException("接口出错");
+        }
+        OcrResult json = sent.json(OcrResult.class);
+        if(json.getErrorCode()!=null){
+            throw new BizException(json.getErrorMsg());
+        }
+        return json;
+    }
 }

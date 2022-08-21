@@ -13,9 +13,21 @@ public class ScheduledConfiguration {
     public void setFsService(FsService fsService) {
         this.fsService = fsService;
     }
+
+    /**
+     * 线上环境刷新
+     */
     @Scheduled(cron = "0 0 * * * ?")//秒 分 时 日 月 年
     public void cleanUp() {
         fsService.refreshToken("cli_a2d09ef7ea38d00d");
+    }
+
+    /**
+     * 线下环境刷新
+     */
+    @Scheduled(cron = "0 * * * * ?")//秒 分 时 日 月 年
+    public void testRefresh() {
+        fsService.refreshToken("cli_a2e733a3af38900d");
     }
 
 }

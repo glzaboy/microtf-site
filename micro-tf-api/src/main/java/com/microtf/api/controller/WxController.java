@@ -2,16 +2,14 @@ package com.microtf.api.controller;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.microtf.framework.dto.miniapp.MiniAppLoginResponse;
-import com.microtf.framework.dto.miniapp.MiniPlantResponse;
-import com.microtf.framework.dto.miniapp.UploadResponse;
-import com.microtf.framework.dto.miniapp.WxLogin;
+import com.microtf.framework.dto.miniapp.*;
 import com.microtf.framework.dto.storage.StorageObject;
 import com.microtf.framework.dto.storage.StorageObjectStream;
 import com.microtf.framework.exceptions.BizException;
 import com.microtf.framework.services.miniapp.BaiduAiService;
 import com.microtf.framework.services.miniapp.FsService;
 import com.microtf.framework.services.miniapp.WxService;
+import com.microtf.framework.services.miniapp.baiduAi.OcrResult;
 import com.microtf.framework.services.miniapp.baiduAi.PlantResult;
 import com.microtf.framework.services.storage.StorageManagerService;
 import com.microtf.framework.services.storage.StorageService;
@@ -61,13 +59,18 @@ public class WxController {
 
     @RequestMapping("login")
     public MiniAppLoginResponse login(@RequestParam String code, @RequestParam String appId) {
-        WxLogin login = wxService.login(appId, code);
         MiniAppLoginResponse miniAppLoginResponse=new MiniAppLoginResponse();
-        miniAppLoginResponse.setOpenId(login.getOpenId());
-        Date expTime = new Date(System.currentTimeMillis() + 86400*1000L);
-        String sign = JWT.create().withClaim("openId", login.getOpenId()).withClaim("appId", appId).withExpiresAt(expTime).sign(Algorithm.HMAC256("123456"));
-        miniAppLoginResponse.setJwtPayload(sign);
-        miniAppLoginResponse.setOpenId(login.getOpenId());
+        try{
+            WxLogin login = wxService.login(appId, code);
+            miniAppLoginResponse.setOpenId(login.getOpenId());
+            Date expTime = new Date(System.currentTimeMillis() + 86400*1000L);
+            String sign = JWT.create().withClaim("openId", login.getOpenId()).withClaim("appId", appId).withExpiresAt(expTime).sign(Algorithm.HMAC256("123456"));
+            miniAppLoginResponse.setJwtPayload(sign);
+            miniAppLoginResponse.setOpenId(login.getOpenId());
+        }catch (BizException e){
+            miniAppLoginResponse.setErrorCode("1");
+            miniAppLoginResponse.setErrorMsg(e.getMessage());
+        }
         return miniAppLoginResponse;
     }
     @RequestMapping("feishulogin/{appId}")
@@ -133,6 +136,18 @@ public class WxController {
         try{
             PlantResult plant = baiduAiService.getPlant(picture, 5);
             BeanUtils.copyProperties(plant,response);
+        }catch (BizException e){
+            response.setErrorCode("1");
+            response.setErrorMsg("识别出错原因"+e.getMessage());
+        }
+        return response;
+    }
+    @GetMapping("/getPictureText")
+    public MiniOcrResponse getPictureText(@RequestParam String picture) {
+        MiniOcrResponse response=new MiniOcrResponse();
+        try{
+            OcrResult picOcrText = baiduAiService.getPicOcrText(picture);
+            BeanUtils.copyProperties(picOcrText,response);
         }catch (BizException e){
             response.setErrorCode("1");
             response.setErrorMsg("识别出错原因"+e.getMessage());
