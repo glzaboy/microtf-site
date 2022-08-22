@@ -42,7 +42,7 @@ public interface StorageService {
      * 将inputStream内容保存到存储
      *
      * @param inputStream inputStream
-     * @param objName     存储名称
+     * @param objName     存储名称ID
      * @return 存储信息
      * @throws BizException 失败信息
      */
@@ -53,41 +53,41 @@ public interface StorageService {
     /**
      * 删除存储
      *
-     * @param objName 存储名称
+     * @param objectId 存储名称ID
      * @throws BizException 失败信息
      */
-    default void delete(String objName) throws BizException {
+    default void delete(String objectId) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
     /**
      * 删除存储
      *
-     * @param objNameList 存储名称列表
+     * @param objectIdList 存储名称列表ID
      * @return 是否成功信息
      * @throws BizException 失败信息
      */
-    default List<String> delete(List<String> objNameList) throws BizException {
+    default List<String> delete(List<String> objectIdList) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
 
     /**
      * 获取存储信息
      *
-     * @param objName 存储名称
+     * @param objectId 存储名称ID
      * @return 存储信息
      * @throws BizException 失败信息
      */
-    default StorageObject getUrl(String objName) throws BizException {
+    default StorageObject getUrl(String objectId) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
     /**
      * 获取文件输入流
      *
-     * @param objName 存储名称
+     * @param objectId 存储名称ID
      * @return 文件流
      * @throws BizException 失败信息
      */
-    default StorageObjectStream getStream(String objName) throws BizException {
+    default StorageObjectStream getStream(String objectId) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
 

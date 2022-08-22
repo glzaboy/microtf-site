@@ -46,4 +46,12 @@ public class Config extends SettingDto {
      * 用户访问桶域名地址
      */
     private String urlHost;
+    /**
+     * 引擎处理类
+     */
+    private String canonicalName;
+    /**
+     * 用户ID，有个别存储除ak,sk外可能以用户身份来执行
+     */
+    private String openUserId;
 }
