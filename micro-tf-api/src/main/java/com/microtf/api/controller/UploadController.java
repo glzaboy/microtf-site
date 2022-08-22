@@ -37,7 +37,7 @@ public class UploadController {
     @PostMapping("/editor")
     public Response<EditorUpload> editor(MultipartFile file) {
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-        String store="feishu";
+        String store="sentany";
         EditorUpload.EditorUploadBuilder builder=EditorUpload.builder();
         Optional<StorageService> storageService = storageManagerService.selectStorage(store);
         StringBuilder fileNameBuffer= new StringBuilder();
