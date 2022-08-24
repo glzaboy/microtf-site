@@ -19,7 +19,7 @@ public class WxService {
     public void setSettingService(SettingService settingService) {
         this.settingService = settingService;
     }
-    public String LOGIN_URL="https://api.weixin.qq.com/sns/jscode2session?grant_type=authorization_code";
+    public final String LOGIN_URL="https://api.weixin.qq.com/sns/jscode2session?grant_type=authorization_code";
 
     public WxLogin login(String appId, String code) {
         WxAppInfo setting = settingService.getSetting(appId, WxAppInfo.class);

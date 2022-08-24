@@ -37,6 +37,7 @@ public interface LoginAuth {
      * @return 加密后密码
      * @author glzaboy
      */
+    @SuppressWarnings("unused")
     default String encodePassword(String passwd){
         return PasswordUtil.encodePassword(passwd);
     }

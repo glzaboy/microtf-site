@@ -54,6 +54,7 @@ public class JwtService {
      * @param jwtToken 签名结果Token
      * @return jwt未经过有效性验证的结果
      */
+    @SuppressWarnings("unused")
     public DecodedJWT decode(String jwtToken){
         return JWT.decode(jwtToken);
     }
@@ -62,6 +63,7 @@ public class JwtService {
      * @param jwtToken 签名结果Token
      * @return 用户信息
      */
+    @SuppressWarnings("unused")
     public Optional<String> getUserId(String jwtToken){
         DecodedJWT decode = getJwtInfo(jwtToken);
         return decode.getAudience().stream().findFirst();

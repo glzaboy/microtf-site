@@ -77,7 +77,7 @@ public class FeishuStorageService implements StorageService {
         this.feishuUserTokenRepository = feishuUserTokenRepository;
     }
 
-    public Function<HttpUtil.HttpAuth, HttpUtil.HttpAuthReturn> httpBearValue=(HttpUtil.HttpAuth httpAuth)-> {
+    public final Function<HttpUtil.HttpAuth, HttpUtil.HttpAuthReturn> httpBearValue=(HttpUtil.HttpAuth httpAuth)-> {
         if(httpAuth.getOpenUserId()==null){//走应用api
             HttpUtil.HttpAuthReturn httpAuthReturn = redisTemplate.opsForValue().get(httpAuth.getUser() + httpAuth.getPwd());
             if(httpAuthReturn!=null){
