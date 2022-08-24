@@ -24,6 +24,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashMap;
@@ -87,7 +88,7 @@ public class FeishuStorageService implements StorageService {
             builder.url("https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal");
             builder.method(HttpUtil.Method.JSON).postObject(TokenInput.builder().appId(httpAuth.getUser()).appSecret(httpAuth.getPwd()).build());
             HttpUtil.HttpResponse sent = HttpUtil.sent(builder.build());
-            if(sent.getStatus() ==200){
+            if(sent.getStatus() == HttpURLConnection.HTTP_OK){
                 Token json = sent.json(Token.class);
                 if(json.getCode()==0){
                     httpAuthReturn1.setAuthValue("Bearer "+json.getTenantAccessToken());
@@ -124,7 +125,7 @@ public class FeishuStorageService implements StorageService {
                 .auth(HttpUtil.HttpAuth.builder().user(config.getAccessKeyId()).pwd(config.getSecretAccessKey()).openUserId(config.getOpenUserId()).build())
                 .authFunction(httpBearValue).build();
         HttpUtil.HttpResponse sent = HttpUtil.sent(builder.build());
-        if(sent.getStatus().intValue()==200){
+        if(sent.getStatus() ==HttpURLConnection.HTTP_OK){
             return sent.json(RootDirInfo.class);
         }else {
             return null;
@@ -169,13 +170,13 @@ public class FeishuStorageService implements StorageService {
             RootDirInfo rootDir = getRootDir();
             log.info(rootDir.toString());
             HttpUtil.HttpRequest.HttpRequestBuilder builder = HttpUtil.HttpRequest.builder();
-            Map<String,String> formData=new HashMap<>();
+            Map<String,String> formData=new HashMap<>(16);
             formData.put("parent_node",rootDir.getData().getToken());
             formData.put("parent_type","explorer");
             formData.put("file_name",objName);
             byte[] bytes = inputStream.readAllBytes();
             formData.put("size", String.valueOf(bytes.length));
-            Map<String, HttpUtil.File> postFile=new HashMap<>();
+            Map<String, HttpUtil.File> postFile=new HashMap<>(16);
 
             postFile.put("file",HttpUtil.File.builder().contentType(contentType).fileName(objName).content(bytes).build());
             builder.method(HttpUtil.Method.FILE).url("https://open.feishu.cn/open-apis/drive/v1/files/upload_all")
@@ -197,8 +198,7 @@ public class FeishuStorageService implements StorageService {
 
     @Override
     public void delete(String objectId) throws BizException {
-        return;
-//        try {
+    //        try {
 //            getClient().removeObject(RemoveObjectArgs.builder().bucket(config.getBucket()).object(objName).build());
 //        } catch (ErrorResponseException | InternalException | InsufficientDataException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
 //            log.error("S3StorageService-->delete storage file fail",e);
@@ -244,16 +244,14 @@ public class FeishuStorageService implements StorageService {
         storageObjectStream.setObjectId(objectId);
         Map<String,String> metaData=new HashMap<>(16);
         HttpUtil.HttpRequest.HttpRequestBuilder builder = HttpUtil.HttpRequest.builder();
-        Map<String,String> pathVar=new HashMap<>();
+        Map<String,String> pathVar=new HashMap<>(16);
         pathVar.put("file_token",objectId);
         builder.method(HttpUtil.Method.GET).url("https://open.feishu.cn/open-apis/drive/v1/files/:file_token/download");
         builder.auth(HttpUtil.HttpAuth.builder().user(config.getAccessKeyId()).pwd(config.getSecretAccessKey()).openUserId(config.getOpenUserId()).build())
                 .authFunction(httpBearValue)
                 .pathVar(pathVar);
         HttpUtil.HttpResponse sent = HttpUtil.sent(builder.build());
-        sent.getHeaders().forEach((item,value)->{
-            metaData.put(item,value);
-        });
+        metaData.putAll(sent.getHeaders());
         storageObjectStream.setMetaData(metaData);
         storageObjectStream.setBufferedInputStream(new BufferedInputStream(new ByteArrayInputStream(sent.getBody())));
         return storageObjectStream;

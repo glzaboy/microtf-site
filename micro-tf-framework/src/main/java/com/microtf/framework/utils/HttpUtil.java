@@ -34,7 +34,7 @@ public class HttpUtil {
     private static final String URL_START = "?";
     private static final String URL_SPLIT = "&";
     private static final String SCHEME_FILE = "file://";
-    private static final OkHttpClient.Builder okhttpBuild=new OkHttpClient.Builder();
+    private static final OkHttpClient.Builder OKHTTP_BUILD =new OkHttpClient.Builder();
     public enum Method {
         JSON, FORM, FILE, DELETE, GET, PUT, HEAD,PATCH
     }
@@ -43,11 +43,11 @@ public class HttpUtil {
         return getClient(false,10);
     }
     public static OkHttpClient getClient(boolean retry,int timeOut){
-        okhttpBuild.writeTimeout(timeOut, TimeUnit.SECONDS);
-        okhttpBuild.readTimeout(timeOut, TimeUnit.SECONDS);
-        okhttpBuild.connectTimeout(3, TimeUnit.SECONDS);
-        okhttpBuild.retryOnConnectionFailure(retry);
-        return okhttpBuild.build();
+        OKHTTP_BUILD.writeTimeout(timeOut, TimeUnit.SECONDS);
+        OKHTTP_BUILD.readTimeout(timeOut, TimeUnit.SECONDS);
+        OKHTTP_BUILD.connectTimeout(3, TimeUnit.SECONDS);
+        OKHTTP_BUILD.retryOnConnectionFailure(retry);
+        return OKHTTP_BUILD.build();
     }
     @Data
     @Builder
@@ -68,6 +68,7 @@ public class HttpUtil {
         private byte[] body;
         private Integer status;
         private Map<String,String> headers;
+        @SuppressWarnings("unused")
         public String html(){
             return new String(body);
         }
@@ -123,7 +124,7 @@ public class HttpUtil {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String requestJsonStr = objectMapper.writeValueAsString(param);
-            return objectMapper.readValue(requestJsonStr, new TypeReference<Map<String, String>>() {
+            return objectMapper.readValue(requestJsonStr, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
             return Collections.emptyMap();
@@ -211,7 +212,7 @@ public class HttpUtil {
             HttpAuthReturn apply = httpRequest.getAuthFunction().apply(httpRequest.getAuth());
             if(!Objects.isNull(apply)){
                 if(apply.requestParamName!=null){
-                    Map<String, String> query = Optional.ofNullable(httpRequest.getQuery()).orElseGet(()->new HashMap<String,String>());
+                    Map<String, String> query = Optional.ofNullable(httpRequest.getQuery()).orElseGet(()-> new HashMap<>(16));
                     query.put(apply.getRequestParamName(),apply.getAuthValue());
                     httpRequest.setQuery(query);
                 }else{
@@ -301,8 +302,8 @@ public class HttpUtil {
             Response execute = okHttpClient.newCall(builder1.build()).execute();
             builder.status(execute.code());
             Iterator<Pair<String, String>> iterator = execute.headers().iterator();
-            Map<String,String> headers=new HashMap<>();
-            for (;iterator.hasNext();){
+            Map<String,String> headers=new HashMap<>(16);
+            while (iterator.hasNext()) {
                 Pair<String, String> next = iterator.next();
                 next.getFirst();
                 headers.put(next.getFirst(),next.getSecond());

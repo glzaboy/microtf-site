@@ -54,7 +54,7 @@ public class BaiduAiService {
             return null;
         }
     };
-    public PlantResult getPlant(String pictrureUrl,Integer retInfoNum){
+    public PlantResult getPlant(String pictureUrl,Integer retInfoNum){
         BaiduAiConfig baiduAi = settingService.getSetting("baiduAi", BaiduAiConfig.class);
         if(!baiduAi.getRead()){
             throw new BizException("ai接口没有设置");
@@ -64,7 +64,7 @@ public class BaiduAiService {
         builder.method(HttpUtil.Method.FORM);
         Map<String,String> post =new HashMap<>();
         post.put("baike_num",retInfoNum.toString());
-        post.put("url",pictrureUrl);
+        post.put("url",pictureUrl);
         builder.authFunction(httpBearValue);
         builder.auth(HttpUtil.HttpAuth.builder().user(baiduAi.getClientId()).pwd(baiduAi.getClientSecret()).build());
         HttpUtil.HttpResponse sent = HttpUtil.sent(builder.url(AI_PLANT_URL).form(post).build());
@@ -73,7 +73,7 @@ public class BaiduAiService {
         }
         return sent.json(PlantResult.class);
     }
-    public OcrResult getPicOcrText(String pictrureUrl){
+    public OcrResult getPicOcrText(String pictureUrl){
         BaiduAiConfig baiduAi = settingService.getSetting("baiduAi", BaiduAiConfig.class);
         if(!baiduAi.getRead()){
             throw new BizException("ai接口没有设置");
@@ -84,7 +84,7 @@ public class BaiduAiService {
         Map<String,String> post =new HashMap<>();
         post.put("detect_direction","true");
         post.put("paragraph","true");
-        post.put("url",pictrureUrl);
+        post.put("url",pictureUrl);
         builder.authFunction(httpBearValue);
         builder.auth(HttpUtil.HttpAuth.builder().user(baiduAi.getClientId()).pwd(baiduAi.getClientSecret()).build());
         HttpUtil.HttpResponse sent = HttpUtil.sent(builder.url(AI_OCR_URL).form(post).build());
