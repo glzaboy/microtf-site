@@ -27,6 +27,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * 微信小程序接口
+ * @author  glzaboy
+ */
 @RestController
 @RequestMapping("wxv2")
 @Slf4j
@@ -74,7 +78,7 @@ public class WxController {
         return miniAppLoginResponse;
     }
     @RequestMapping("feishulogin/{appId}")
-    public String feishulogin(@PathVariable String appId,@RequestParam(required = false) String code) {
+    public String feiShuLogin(@PathVariable String appId,@RequestParam(required = false) String code) {
         if(code==null){
             return "请使用浏览器访问 https://open.feishu.cn/open-apis/authen/v1/user_auth_page_beta?app_id=cli_a2d09ef7ea38d00d&redirect_uri=http://localhost:8080/api/wxv2/feishulogin/cli_a2d09ef7ea38d00d&state=RANDOMSTATE";
         }
@@ -87,7 +91,7 @@ public class WxController {
     }
     @RequestMapping("getFeishuFile/{fileToken}")
     @ResponseBody
-    public void getFeishuFile(@PathVariable String fileToken, HttpServletResponse httpServletResponse) {
+    public void getFeiShuFile(@PathVariable String fileToken, HttpServletResponse httpServletResponse) {
         try {
             Optional<StorageService> storageService = storageManagerService.selectStorage("feishu/");
             if(storageService.isPresent()){

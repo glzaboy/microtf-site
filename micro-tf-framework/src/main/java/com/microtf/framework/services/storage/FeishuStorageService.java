@@ -35,8 +35,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
- * S3协议存储服务
- * @author guliuzhong
+ * 飞书云储服务
+ * @author  glzaboy
+ * @version 1.0
  */
 @Slf4j
 public class FeishuStorageService implements StorageService {
