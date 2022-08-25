@@ -5,10 +5,7 @@ import com.microtf.framework.dto.storage.StorageObjectStream;
 import com.microtf.framework.exceptions.BizException;
 import com.microtf.framework.jpa.FeishuUserTokenRepository;
 import com.microtf.framework.jpa.entity.FeishuUserToken;
-import com.microtf.framework.services.storage.feishu.RootDirInfo;
-import com.microtf.framework.services.storage.feishu.Token;
-import com.microtf.framework.services.storage.feishu.TokenInput;
-import com.microtf.framework.services.storage.feishu.UploadInfo;
+import com.microtf.framework.services.storage.feishu.*;
 import com.microtf.framework.utils.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -27,10 +24,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -43,6 +37,7 @@ import java.util.function.Function;
 public class FeishuStorageService implements StorageService {
     private String pathStart;
     private Config config;
+    private static final String CODE = "code";
 
     public void setPathStart(String pathStart) {
         this.pathStart = pathStart;
@@ -91,12 +86,10 @@ public class FeishuStorageService implements StorageService {
             HttpUtil.HttpResponse sent = HttpUtil.sent(builder.build());
             if(sent.getStatus() == HttpURLConnection.HTTP_OK){
                 Token json = sent.json(Token.class);
-                if(json.getCode()==0){
-                    httpAuthReturn1.setAuthValue("Bearer "+json.getTenantAccessToken());
-                    redisTemplate.opsForValue().set(httpAuth.getUser() + httpAuth.getPwd(),httpAuthReturn1,json.getExpire()-1800, TimeUnit.SECONDS);
-                    return httpAuthReturn1;
-                }
-                return null;
+                checkStatus(json);
+                httpAuthReturn1.setAuthValue("Bearer "+json.getTenantAccessToken());
+                redisTemplate.opsForValue().set(httpAuth.getUser() + httpAuth.getPwd(),httpAuthReturn1,json.getExpire()-1800, TimeUnit.SECONDS);
+                return httpAuthReturn1;
             }else {
                 return null;
             }
@@ -145,22 +138,22 @@ public class FeishuStorageService implements StorageService {
         try {
             requestBuilder.url(url.toURL()).get();
         } catch (MalformedURLException e) {
-            log.error("FeishuStorageService-->upload download url {}失败 {}",url,e);
+            log.error("FeiShu StorageService-->upload download url {}失败 {}",url,e);
             throw new BizException("上传文件失败，获取远程内容失败");
         }
         try {
             Response execute = httpClient.newCall(requestBuilder.build()).execute();
             if(!execute.isSuccessful()){
-                throw new BizException("FeishuStorageService-->upload response fail");
+                throw new BizException("FeiShu StorageService-->upload response fail");
             }
             ResponseBody body = execute.body();
             if(body==null){
-                log.error("FeishuStorageService-->upload response Body is null");
+                log.error("FeiShu StorageService-->upload response Body is null");
                 throw new BizException("上传文件失败，获取远程内容失败");
             }
             return upload(body.byteStream(),objName,body.contentType().toString());
         } catch (IOException e) {
-            log.error("FeishuStorageService-->upload storage upload fail",e);
+            log.error("FeiShu StorageService-->upload storage upload fail",e);
             throw new BizException("上传文件失败");
         }
     }
@@ -175,7 +168,7 @@ public class FeishuStorageService implements StorageService {
             formData.put("parent_node",rootDir.getData().getToken());
             formData.put("parent_type","explorer");
             formData.put("file_name",objName);
-            byte[] bytes = inputStream.readAllBytes();
+            byte[] bytes = bufferedInputStream.readAllBytes();
             formData.put("size", String.valueOf(bytes.length));
             Map<String, HttpUtil.File> postFile=new HashMap<>(16);
 
@@ -189,46 +182,41 @@ public class FeishuStorageService implements StorageService {
             log.info("上传结果{}",json);
             return getUrl(json.getData().getFileToken());
         } catch (IOException e) {
-            log.error("FeishuStorageService-->upload storage upload fail",e);
+            log.error("FeiShu StorageService-->upload storage upload fail",e);
             throw new BizException("上传文件失败");
         }catch (Exception e){
-            log.error("FeishuStorageService-->upload storage upload fail",e);
+            log.error("FeiShu StorageService-->upload storage upload fail",e);
             throw new BizException("上传文件失败");
         }
     }
 
     @Override
     public void delete(String objectId) throws BizException {
-    //        try {
-//            getClient().removeObject(RemoveObjectArgs.builder().bucket(config.getBucket()).object(objName).build());
-//        } catch (ErrorResponseException | InternalException | InsufficientDataException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
-//            log.error("S3StorageService-->delete storage file fail",e);
-//            throw new BizException("删除文件失败");
-//        }
+        HttpUtil.HttpRequest.HttpRequestBuilder builder = HttpUtil.HttpRequest.builder();
+        Map<String,String> pathVar=new HashMap<>(16);
+        pathVar.put("file_token",objectId);
+        Map<String,String> query=new HashMap<>(16);
+        query.put("type","file");
+        builder.method(HttpUtil.Method.DELETE).url("https://open.feishu.cn/open-apis/drive/v1/files/:file_token");
+        builder.auth(HttpUtil.HttpAuth.builder().user(config.getAccessKeyId()).pwd(config.getSecretAccessKey()).openUserId(config.getOpenUserId()).build())
+                .authFunction(httpBearValue)
+                .pathVar(pathVar)
+                .query(query);
+        HttpUtil.HttpResponse sent = HttpUtil.sent(builder.build());
+        DeleteInfo json = sent.json(DeleteInfo.class);
+        checkStatus(json);
     }
     @Override
-    public List<String> delete(List<String> objectIdList) throws BizException {
-        return null;
-//        List<DeleteObject> strings = new ArrayList<>();
-//        for(String item:objNameList){
-//            DeleteObject deleteObject=new DeleteObject(item);
-//            strings.add(deleteObject);
-//        }
-//        Iterable<Result<DeleteError>> results =getClient().removeObjects(RemoveObjectsArgs.builder().bucket(config.getBucket()).objects(strings).build());
-//        Iterator<Result<DeleteError>> iterator = results.iterator();
-//        List<String> ret=new ArrayList<>();
-//        while (iterator.hasNext()) {
-//            Result<DeleteError> item = iterator.next();
-//            DeleteError deleteError;
-//            try {
-//                deleteError = item.get();
-//                ret.add(deleteError.message());
-//            } catch (ErrorResponseException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException | InsufficientDataException e) {
-//                log.error("S3StorageService-->delete storage file fail",e);
-//                e.printStackTrace();
-//            }
-//        }
-//        return  ret;
+    public List<String> delete(List<String> objectIdList) {
+        List<String> strings = new ArrayList<>();
+        for(String item:objectIdList){
+            try{
+                delete(item);
+            }catch (BizException e){
+                strings.add("删除"+item+"失败，原因："+e.getMessage());
+            }
+        }
+        return  strings;
     }
 
     @Override
@@ -256,5 +244,25 @@ public class FeishuStorageService implements StorageService {
         storageObjectStream.setMetaData(metaData);
         storageObjectStream.setBufferedInputStream(new BufferedInputStream(new ByteArrayInputStream(sent.getBody())));
         return storageObjectStream;
+    }
+
+    /**
+     * 检测接口调用是否错误
+     * @param object 接口返回值
+     */
+    private void checkStatus(Object object){
+        checkStatus(object,"0");
+    }
+    /**
+     * 检测接口调用是否错误
+     * @param object  接口返回值
+     * @param successCode 期望正确返回值
+     */
+    private void checkStatus(Object object,String successCode){
+        Map<String, Object> stringObjectMap = HttpUtil.object2MapObject(object);
+        if(stringObjectMap.get(CODE).equals(successCode)){
+            return;
+        }
+        throw new BizException(stringObjectMap.get("msg").toString());
     }
 }

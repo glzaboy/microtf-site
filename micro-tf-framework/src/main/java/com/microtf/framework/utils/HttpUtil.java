@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 /**
  * Http客户端，
- * 基于okhttp进行二次封闭，更适合调用api
+ * 基于okhttp进行二次封装，更适合调用api
  *
  * @author glzaboy@163.com
  */
@@ -71,7 +71,16 @@ public class HttpUtil {
             return Collections.emptyMap();
         }
     }
-
+    public static Map<String, Object> object2MapObject(Object param) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String requestJsonStr = objectMapper.writeValueAsString(param);
+            return objectMapper.readValue(requestJsonStr, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
+            return Collections.emptyMap();
+        }
+    }
     public static String object2Json(Object param) throws BizException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
