@@ -9,20 +9,25 @@ import com.microtf.framework.exceptions.BizException;
 import com.microtf.framework.services.miniapp.BaiduAiService;
 import com.microtf.framework.services.miniapp.FsService;
 import com.microtf.framework.services.miniapp.WxService;
+import com.microtf.framework.services.miniapp.baiduAi.BodySegResult;
 import com.microtf.framework.services.miniapp.baiduAi.OcrResult;
 import com.microtf.framework.services.miniapp.baiduAi.PlantResult;
 import com.microtf.framework.services.storage.StorageManagerService;
 import com.microtf.framework.services.storage.StorageService;
+import com.microtf.framework.utils.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -153,6 +158,21 @@ public class WxController {
             OcrResult picOcrText = baiduAiService.getPicOcrText(picture);
             BeanUtils.copyProperties(picOcrText,response);
         }catch (BizException e){
+            response.setErrorCode("1");
+            response.setErrorMsg("识别出错原因"+e.getMessage());
+        }
+        return response;
+    }
+    @GetMapping("/getBodySeg")
+    public MiniBodySegResponse getBodySeg(@RequestParam String picture) {
+        MiniBodySegResponse response=new MiniBodySegResponse();
+        try{
+            BodySegResult bodySeg = baiduAiService.getBodySeg(picture);
+            BufferedImage bufferedImage = ImageUtil.byte2BufferedImage(Base64.getDecoder().decode(bodySeg.getForeground()));
+            BufferedImage compress = ImageUtil.compress(bufferedImage);
+//            ImageIO.write();
+            BeanUtils.copyProperties(bodySeg,response);
+        }catch (BizException | IOException e){
             response.setErrorCode("1");
             response.setErrorMsg("识别出错原因"+e.getMessage());
         }
