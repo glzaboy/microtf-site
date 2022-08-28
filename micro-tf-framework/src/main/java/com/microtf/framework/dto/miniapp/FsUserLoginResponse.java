@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 飞书登录接口
+ * @author  glzaboy
+ */
 @NoArgsConstructor
 @Data
 public class FsUserLoginResponse {

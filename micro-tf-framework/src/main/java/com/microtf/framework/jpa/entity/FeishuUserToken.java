@@ -7,6 +7,10 @@ import org.hibernate.annotations.Comment;
 
 import javax.persistence.Entity;
 
+/**
+ * 飞书用户存储
+ * @author guliuzhong
+ */
 @Entity
 @Getter
 @Setter

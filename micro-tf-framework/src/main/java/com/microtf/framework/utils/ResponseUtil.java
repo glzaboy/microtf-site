@@ -34,11 +34,11 @@ public class ResponseUtil {
      * 返回出错信息
      * @param errorMsg 错误信息
      * @param errorShowType 提示类型
-     * @param classiz 返回数据类型
+     * @param clazz 返回数据类型
      * @param <T> 返回数据类型
      * @return 错误信息
      */
-    public static<T extends Serializable> Response<T> responseError(String  errorMsg, BaseResponse.ErrorShowType errorShowType,Class<T> classiz) {
+    public static<T extends Serializable> Response<T> responseError(String  errorMsg, BaseResponse.ErrorShowType errorShowType,Class<T> clazz) {
         Response<T> bizResponse=new Response<>();
         bizResponse.setSuccess(false);
         bizResponse.setErrorMessage(errorMsg);

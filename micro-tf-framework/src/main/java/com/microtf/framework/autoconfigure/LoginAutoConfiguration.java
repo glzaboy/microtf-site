@@ -24,7 +24,7 @@ import java.util.UUID;
 @EnableConfigurationProperties(LoginProperties.class)
 @Slf4j
 public class LoginAutoConfiguration implements ApplicationContextAware {
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
     @Bean
     public JwtService jwtService(LoginProperties jwtProperties) {
         log.info("自动配置JwtService");

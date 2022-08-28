@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @Data
-public class UploadInfo {
+public class DeleteInfo {
 
     @JsonProperty("code")
     private Integer code;
@@ -22,7 +22,7 @@ public class UploadInfo {
     @NoArgsConstructor
     @Data
     public static class DataDTO {
-        @JsonProperty("file_token")
-        private String fileToken;
+        @JsonProperty("task_id")
+        private String taskId;
     }
 }

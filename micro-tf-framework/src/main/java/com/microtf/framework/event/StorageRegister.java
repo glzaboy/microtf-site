@@ -3,7 +3,6 @@ package com.microtf.framework.event;
 import com.microtf.framework.services.BeanService;
 import com.microtf.framework.services.SettingService;
 import com.microtf.framework.services.storage.Config;
-import com.microtf.framework.services.storage.S3StorageService;
 import com.microtf.framework.services.storage.StorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

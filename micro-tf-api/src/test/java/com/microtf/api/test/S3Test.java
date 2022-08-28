@@ -47,9 +47,7 @@ public class S3Test {
     @Test
     public void test(){
         storageManagerService.selectStorage("sentany").ifPresent(
-                item->{
-                    item.upload("This is china an programmer dev".getBytes(StandardCharsets.UTF_8),"sentany/abc.txt",null);
-                }
+                item-> item.upload("This is china an programmer dev".getBytes(StandardCharsets.UTF_8),"sentany/abc.txt",null)
         );
     }
     @Test

@@ -9,6 +9,10 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * 小程序OCR接口返回
+ * @author  glzaboy
+ */
 @Getter
 @Setter
 public  class MiniOcrResponse extends MiniAppResponse{

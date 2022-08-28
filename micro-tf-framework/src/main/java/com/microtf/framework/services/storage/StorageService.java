@@ -13,16 +13,19 @@ import java.util.List;
  *
  * @author guliuzhong
  */
+@SuppressWarnings("unused")
 public interface StorageService {
     /**
      * 保存内容到存储
      *
-     * @param data    存储的内容
-     * @param objName 存储名称
+     * @param data        存储的内容
+     * @param objName     存储名称
+     * @param contentType 文件件 contentType 为空时会自动检测，但是不保证成功
      * @return 存储信息
      * @throws BizException 失败信息
      */
-    default StorageObject upload(byte[] data, String objName,String contentType) throws BizException {
+    @SuppressWarnings("UnusedReturnValue")
+    default StorageObject upload(byte[] data, String objName, String contentType) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
 
@@ -43,10 +46,11 @@ public interface StorageService {
      *
      * @param inputStream inputStream
      * @param objName     存储名称ID
+     * @param contentType 文件件 contentType 为空时会自动检测，但是不保证成功
      * @return 存储信息
      * @throws BizException 失败信息
      */
-    default StorageObject upload(InputStream inputStream, String objName,String contentType) throws BizException {
+    default StorageObject upload(InputStream inputStream, String objName, String contentType) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
 
@@ -59,6 +63,7 @@ public interface StorageService {
     default void delete(String objectId) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
+
     /**
      * 删除存储
      *
@@ -80,6 +85,7 @@ public interface StorageService {
     default StorageObject getUrl(String objectId) throws BizException {
         throw new UnsupportedOperationException("不支持的功能");
     }
+
     /**
      * 获取文件输入流
      *
@@ -94,6 +100,8 @@ public interface StorageService {
     /**
      * 存储路径开始点，
      * 用于选择存储点
+     *
+     * @return 返回存储路径
      */
     default String getPathStart() {
         throw new UnsupportedOperationException("不支持的功能");
