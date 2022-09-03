@@ -151,7 +151,7 @@ public class FeishuStorageService implements StorageService {
                 log.error("FeiShu StorageService-->upload response Body is null");
                 throw new BizException("上传文件失败，获取远程内容失败");
             }
-            return upload(body.byteStream(),objName,body.contentType().toString());
+            return upload(body.byteStream(),objName, Objects.requireNonNull(body.contentType()).toString());
         } catch (IOException e) {
             log.error("FeiShu StorageService-->upload storage upload fail",e);
             throw new BizException("上传文件失败");
@@ -162,6 +162,7 @@ public class FeishuStorageService implements StorageService {
     public StorageObject upload(InputStream inputStream, String objName,String contentType) throws BizException {
         try(BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)){
             RootDirInfo rootDir = getRootDir();
+            assert rootDir != null;
             log.info(rootDir.toString());
             HttpUtil.HttpRequest.HttpRequestBuilder builder = HttpUtil.HttpRequest.builder();
             Map<String,String> formData=new HashMap<>(16);
@@ -181,10 +182,7 @@ public class FeishuStorageService implements StorageService {
             UploadInfo json = sent.json(UploadInfo.class);
             log.info("上传结果{}",json);
             return getUrl(json.getData().getFileToken());
-        } catch (IOException e) {
-            log.error("FeiShu StorageService-->upload storage upload fail",e);
-            throw new BizException("上传文件失败");
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("FeiShu StorageService-->upload storage upload fail",e);
             throw new BizException("上传文件失败");
         }

@@ -2,7 +2,6 @@ package com.microtf.framework.dto.miniapp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.microtf.framework.services.miniapp.baiduAi.BodySegResult;
-import com.microtf.framework.services.miniapp.baiduAi.OcrResult;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

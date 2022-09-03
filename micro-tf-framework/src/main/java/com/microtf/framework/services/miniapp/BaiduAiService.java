@@ -4,7 +4,6 @@ import com.microtf.framework.exceptions.BizException;
 import com.microtf.framework.services.SettingService;
 import com.microtf.framework.services.miniapp.baiduAi.*;
 import com.microtf.framework.utils.HttpUtil;
-import io.netty.handler.codec.base64.Base64Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

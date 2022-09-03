@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -164,18 +166,13 @@ public class WxController {
         return response;
     }
     @GetMapping("/getBodySeg")
-    public MiniBodySegResponse getBodySeg(@RequestParam String picture) {
-        MiniBodySegResponse response=new MiniBodySegResponse();
-        try{
-            BodySegResult bodySeg = baiduAiService.getBodySeg(picture);
-            BufferedImage bufferedImage = ImageUtil.byte2BufferedImage(Base64.getDecoder().decode(bodySeg.getForeground()));
-            BufferedImage compress = ImageUtil.compress(bufferedImage);
-//            ImageIO.write();
-            BeanUtils.copyProperties(bodySeg,response);
-        }catch (BizException | IOException e){
-            response.setErrorCode("1");
-            response.setErrorMsg("识别出错原因"+e.getMessage());
-        }
-        return response;
+    public void getBodySeg(@RequestParam String picture) throws IOException {
+        BodySegResult bodySeg = baiduAiService.getBodySeg(picture);
+        BufferedImage bufferedImage = ImageUtil.byte2BufferedImage(Base64.getDecoder().decode(bodySeg.getForeground()));
+        BufferedImage compress = ImageUtil.compress(bufferedImage);
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        assert requestAttributes != null;
+        assert requestAttributes.getResponse() != null;
+        ImageIO.write(compress,"png",requestAttributes.getResponse().getOutputStream());
     }
 }
