@@ -55,10 +55,8 @@ public class FsService {
                 httpAuthReturn1.setAuthValue("Bearer " + json.getTenantAccessToken());
                 return httpAuthReturn1;
             }
-            return null;
-        } else {
-            return null;
         }
+        return null;
     };
 
     public void refreshToken(String appId) {
