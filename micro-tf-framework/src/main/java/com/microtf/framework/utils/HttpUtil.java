@@ -71,6 +71,7 @@ public class HttpUtil {
             return Collections.emptyMap();
         }
     }
+
     public static Map<String, Object> object2MapObject(Object param) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -81,6 +82,7 @@ public class HttpUtil {
             return Collections.emptyMap();
         }
     }
+
     public static String object2Json(Object param) throws BizException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -171,7 +173,7 @@ public class HttpUtil {
                 httpRequest.getForm().forEach(builder1::add);
                 return builder.addHeader("Content-Type", "application/x-www-form-urlencoded").post(builder1.build());
             case JSON:
-                RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object2Json(httpRequest.getPostObject()));
+                RequestBody requestBody = RequestBody.create(object2Json(httpRequest.getPostObject()), MediaType.parse("application/json; charset=utf-8"));
                 return builder.addHeader("Content-Type", "application/json; charset=utf-8").post(requestBody);
             case FILE:
                 MultipartBody.Builder multiPartBodyBuilder = new MultipartBody.Builder();
@@ -188,7 +190,7 @@ public class HttpUtil {
                             if (contentType == null) {
                                 contentType = URLConnection.guessContentTypeFromName(value.getUri().toString());
                             }
-                            RequestBody requestBody1 = RequestBody.create(MediaType.parse(contentType), bytes);
+                            RequestBody requestBody1 = RequestBody.create(bytes, MediaType.parse(contentType));
                             multiPartBodyBuilder.addFormDataPart(postItem.getKey(), value.getFileName() != null ? value.getFileName() : value.getUri().getPath(), requestBody1);
                         } else {
                             if (SCHEME_FILE.equalsIgnoreCase(value.getUri().getScheme())) {
@@ -203,7 +205,7 @@ public class HttpUtil {
                                     }
                                 }
                                 @SuppressWarnings(value = "dep-ann")
-                                RequestBody requestBody1 = RequestBody.create(MediaType.parse(contentType), new java.io.File(value.getUri()));
+                                RequestBody requestBody1 = RequestBody.create(new java.io.File(value.getUri()), MediaType.parse(contentType));
                                 multiPartBodyBuilder.addFormDataPart(postItem.getKey(), value.getFileName() != null ? value.getFileName() : value.getUri().getPath(), requestBody1);
                             } else {
                                 Request.Builder postRequestBuilder = new Request.Builder();
@@ -211,7 +213,7 @@ public class HttpUtil {
                                 try {
                                     execute = getClient().newCall(postRequestBuilder.url(value.getUri().toString()).build()).execute();
                                     contentType = Objects.requireNonNull(Objects.requireNonNull(execute.body()).contentType()).toString();
-                                    RequestBody requestBody1 = RequestBody.create(MediaType.parse(contentType), Objects.requireNonNull(execute.body()).bytes());
+                                    RequestBody requestBody1 = RequestBody.create(Objects.requireNonNull(execute.body()).bytes(), MediaType.parse(contentType));
                                     multiPartBodyBuilder.addFormDataPart(postItem.getKey(), value.getFileName() != null ? value.getFileName() : value.getUri().getPath(), requestBody1);
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -224,11 +226,11 @@ public class HttpUtil {
             case HEAD:
                 return builder.head();
             case PUT:
-                return builder.put(RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object2Json(httpRequest.getPostObject())));
+                return builder.put(RequestBody.create(object2Json(httpRequest.getPostObject()), MediaType.parse("application/json; charset=utf-8")));
             case DELETE:
-                return builder.delete(RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object2Json(httpRequest.getPostObject())));
+                return builder.delete(RequestBody.create(object2Json(httpRequest.getPostObject()), MediaType.parse("application/json; charset=utf-8")));
             case PATCH:
-                return builder.patch(RequestBody.create(MediaType.parse("application/json; charset=utf-8"), object2Json(httpRequest.getPostObject())));
+                return builder.patch(RequestBody.create(object2Json(httpRequest.getPostObject()), MediaType.parse("application/json; charset=utf-8")));
             default:
                 return builder.get();
         }
@@ -291,10 +293,12 @@ public class HttpUtil {
         HEAD,
         /**
          * POST JSON 请求
-         */JSON,
+         */
+        JSON,
         /**
          * PATCH 请求
-         */PATCH,
+         */
+        PATCH,
         /**
          * PUT 请求
          */
