@@ -14,7 +14,7 @@ public class SettingSettingTest {
     @Autowired
     SettingService settingService;
     @Test
-    public void test(){
+    public void saveTest(){
         Config config=new Config();
         config.setBucket("microtf");
         config.setRegion("cn-east-1");
@@ -28,7 +28,7 @@ public class SettingSettingTest {
         settingService.saveSetting("microtf", config);
     }
     @Test
-    public void test2(){
+    public void getSettingTest(){
         Config microtf = settingService.getSetting("microtf", Config.class);
         log.info(String.valueOf(microtf));
         Config microtf2 = settingService.getSetting("microtf", Config.class);

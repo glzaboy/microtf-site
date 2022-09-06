@@ -4,6 +4,10 @@ import com.microtf.framework.dto.SettingDto;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 存储配置
+ * @author glzaboy
+ */
 @Getter
 @Setter
 public class Config extends SettingDto {
