@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.net.HttpURLConnection;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +38,7 @@ public class BaiduAiService {
 
     public static final String AI_PLANT_URL = "https://aip.baidubce.com/rest/2.0/image-classify/v1/plant";
     public static final String AI_OCR_URL = "https://aip.baidubce.com/rest/2.0/ocr/v1/general";
+    public static final String AI_BODY_SEG_URL = "https://aip.baidubce.com/rest/2.0/image-classify/v1/body_seg";
     public final Function<HttpUtil.HttpAuth, HttpUtil.HttpAuthReturn> httpBearValue = (HttpUtil.HttpAuth httpAuth) -> {
         HttpUtil.HttpAuthReturn httpAuthReturn = redisTemplate.opsForValue().get("baiduAi" + httpAuth.getUser() + httpAuth.getPwd());
         if (httpAuthReturn != null) {
@@ -100,6 +102,32 @@ public class BaiduAiService {
             throw new BizException("接口出错");
         }
         OcrResult json = sent.json(OcrResult.class);
+        if (json.getErrorCode() != null) {
+            throw new BizException(json.getErrorMsg());
+        }
+        return json;
+    }
+    public BodySegResult getBodySeg(String pictureUrl) {
+        BaiduAiConfig baiduAi = settingService.getSetting("baiduAi", BaiduAiConfig.class);
+        if (!baiduAi.getRead()) {
+            throw new BizException("ai接口没有设置");
+        }
+
+        HttpUtil.HttpRequest.HttpRequestBuilder builder = HttpUtil.HttpRequest.builder();
+        builder.method(HttpUtil.Method.FORM);
+        Map<String, String> post = new HashMap<>(16);
+        HttpUtil.HttpRequest.HttpRequestBuilder builder2 = HttpUtil.HttpRequest.builder();
+        builder2.url(pictureUrl).method(HttpUtil.Method.GET);
+        HttpUtil.HttpResponse sent1 = HttpUtil.sent(builder2.build());
+        post.put("type", "foreground");
+        post.put("image", Base64.getEncoder().encodeToString(sent1.getBody()));
+        builder.authFunction(httpBearValue);
+        builder.auth(HttpUtil.HttpAuth.builder().user(baiduAi.getClientId()).pwd(baiduAi.getClientSecret()).build());
+        HttpUtil.HttpResponse sent = HttpUtil.sent(builder.url(AI_BODY_SEG_URL).form(post).build());
+        if (sent.getStatus() != HttpURLConnection.HTTP_OK) {
+            throw new BizException("接口出错");
+        }
+        BodySegResult json = sent.json(BodySegResult.class);
         if (json.getErrorCode() != null) {
             throw new BizException(json.getErrorMsg());
         }

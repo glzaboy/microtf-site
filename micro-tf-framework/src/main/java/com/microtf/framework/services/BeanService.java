@@ -1,5 +1,6 @@
 package com.microtf.framework.services;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -15,7 +16,7 @@ import java.util.Properties;
 public class BeanService implements BeanFactoryAware {
     BeanFactory beanFactory;
     @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+    public void setBeanFactory(@NotNull BeanFactory beanFactory) throws BeansException {
         this.beanFactory=beanFactory;
     }
     private final String prefix="beanPrefix";

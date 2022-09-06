@@ -6,11 +6,8 @@ import com.microtf.framework.services.JwtService;
 import com.microtf.framework.services.LoginAuth;
 import com.microtf.framework.services.LoginService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
@@ -23,8 +20,7 @@ import java.util.UUID;
 @ConditionalOnClass({JWT.class, LoginAop.class})
 @EnableConfigurationProperties(LoginProperties.class)
 @Slf4j
-public class LoginAutoConfiguration implements ApplicationContextAware {
-    private ApplicationContext applicationContext;
+public class LoginAutoConfiguration {
     @Bean
     public JwtService jwtService(LoginProperties jwtProperties) {
         log.info("自动配置JwtService");
@@ -55,8 +51,4 @@ public class LoginAutoConfiguration implements ApplicationContextAware {
         return loginService;
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext=applicationContext;
-    }
 }
