@@ -204,7 +204,9 @@ public class HttpUtil {
                                         e.printStackTrace();
                                     }
                                 }
-                                @SuppressWarnings(value = "dep-ann")
+                                if(contentType==null){
+                                    contentType="application/octet-stream";
+                                }
                                 RequestBody requestBody1 = RequestBody.create(new java.io.File(value.getUri()), MediaType.parse(contentType));
                                 multiPartBodyBuilder.addFormDataPart(postItem.getKey(), value.getFileName() != null ? value.getFileName() : value.getUri().getPath(), requestBody1);
                             } else {
@@ -255,10 +257,10 @@ public class HttpUtil {
             }
             builder.headers(headers);
             if (execute.isSuccessful()) {
-                builder.body(execute.body().bytes());
+                builder.body(Objects.requireNonNull(execute.body()).bytes());
                 return builder.build();
             } else {
-                log.error("请求出错，服务器返回{}", execute.body().string());
+                log.error("请求出错，服务器返回{}", Objects.requireNonNull(execute.body()).string());
                 throw new BizException("Http请求出错" + execute.message());
             }
         } catch (IOException e) {

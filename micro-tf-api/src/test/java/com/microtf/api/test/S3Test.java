@@ -12,8 +12,6 @@ import com.microtf.framework.services.storage.StorageManagerService;
 import com.microtf.framework.services.storage.StorageService;
 import com.microtf.framework.utils.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -70,12 +68,5 @@ public class S3Test {
         for (StorageService item:load){
             System.out.println(item);
         }
-    }
-    @Test
-    public void test5(){
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "{}");
-        RequestBody requestBody2 = RequestBody.create( "{}",MediaType.parse("application/json; charset=utf-8"));
-        log.info(requestBody.toString());
-        System.out.println(requestBody2.equals(requestBody));
     }
 }
