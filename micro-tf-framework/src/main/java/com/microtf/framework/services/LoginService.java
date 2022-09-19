@@ -99,17 +99,15 @@ public class LoginService {
         if (jwtOption.isPresent()) {
             try{
                 DecodedJWT jwtInfo = jwtService.getJwtInfo(jwtOption.get());
+                LoginStateDto.LoginStateDtoBuilder loginStateDtoBuilder = LoginStateDto.builder();
                 if (jwtInfo != null) {
-                    LoginStateDto.LoginStateDtoBuilder loginStateDtoBuilder = LoginStateDto.builder();
                     loginStateDtoBuilder.loginId(jwtInfo.getClaim("loginId").asString())
                             .userId(jwtInfo.getClaim("userId").asString())
                             .loginType(jwtInfo.getClaim("loginType").as(LoginType.class)).guest(false);
-                    loginUserThreadLocal.set(loginStateDtoBuilder.build());
                 } else {
-                    LoginStateDto.LoginStateDtoBuilder loginStateDtoBuilder = LoginStateDto.builder();
                     loginStateDtoBuilder.guest(true);
-                    loginUserThreadLocal.set(loginStateDtoBuilder.build());
                 }
+                loginUserThreadLocal.set(loginStateDtoBuilder.build());
             }catch (JWTVerificationException exception){
                 log.error("解码出错,设置用户为Guest原因{}", exception.getMessage());
                 LoginStateDto.LoginStateDtoBuilder loginStateDtoBuilder = LoginStateDto.builder();

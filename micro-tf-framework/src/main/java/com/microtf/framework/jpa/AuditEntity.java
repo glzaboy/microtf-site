@@ -16,6 +16,7 @@ import java.util.Date;
 /**
  * 基础数据表
  * 包含数据库审计和版本功能
+ * @author glzaboy
  */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)

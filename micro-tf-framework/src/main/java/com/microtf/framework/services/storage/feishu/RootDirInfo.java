@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 飞书云文档根目录
+ * @author guliuzhong
+ */
 @Data
 public class RootDirInfo {
 
