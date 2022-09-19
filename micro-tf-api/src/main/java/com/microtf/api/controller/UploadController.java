@@ -22,7 +22,11 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-@Api(value = "上传",tags = "upload")
+/**
+ * 上传控制器
+ * @author guliuzhong
+ */
+@Api(value = "上传", tags = "upload")
 @RestController
 @RequestMapping("upload")
 @Slf4j
@@ -36,25 +40,25 @@ public class UploadController {
 
     @PostMapping("/editor")
     public Response<EditorUpload> editor(MultipartFile file) {
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-        String store="sentany";
-        EditorUpload.EditorUploadBuilder builder=EditorUpload.builder();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String store = "sentany";
+        EditorUpload.EditorUploadBuilder builder = EditorUpload.builder();
         Optional<StorageService> storageService = storageManagerService.selectStorage(store);
-        StringBuilder fileNameBuffer= new StringBuilder();
+        StringBuilder fileNameBuffer = new StringBuilder();
         fileNameBuffer.append(store).append("/");
         fileNameBuffer.append(simpleDateFormat.format(new Date())).append("/").append(UUID.randomUUID());
-        if(storageService.isPresent()){
+        if (storageService.isPresent()) {
             try {
-                StorageObject upload = storageService.get().upload(file.getInputStream(), fileNameBuffer.toString(),file.getContentType());
+                StorageObject upload = storageService.get().upload(file.getInputStream(), fileNameBuffer.toString(), file.getContentType());
                 builder.url(upload.getUrl());
                 builder.alt(file.getOriginalFilename());
                 builder.href(upload.getUrl());
                 return ResponseUtil.responseData(builder.build());
             } catch (IOException e) {
                 log.error("上传出错");
-                throw new BizException("上传出错"+e.getMessage(), BaseResponse.ErrorShowType.ERROR_MESSAGE);
+                throw new BizException("上传出错" + e.getMessage(), BaseResponse.ErrorShowType.ERROR_MESSAGE);
             }
-        }else {
+        } else {
             throw new BizException("上传出错", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
     }

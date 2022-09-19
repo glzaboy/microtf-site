@@ -10,6 +10,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 
+/**
+ * 设置类后端存储
+ *
+ * @author glzaboy
+ */
 @Entity
 @Getter
 @Setter

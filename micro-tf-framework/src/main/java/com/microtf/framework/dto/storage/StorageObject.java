@@ -7,6 +7,8 @@ import java.util.Map;
 
 /**
  * 存储数据对象
+ *
+ * @author glzaboy
  */
 @Data
 @ToString
@@ -26,5 +28,5 @@ public class StorageObject {
     /**
      * 元数据
      */
-    private Map<String,String> metaData;
+    private Map<String, String> metaData;
 }

@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * 百度ai api 权限难入参
+ *
+ * @author glzaboy
+ */
 @Data
 @Builder
 public class TokenInput {

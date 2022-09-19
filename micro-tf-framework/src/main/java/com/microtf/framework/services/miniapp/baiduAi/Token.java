@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 百度ai api结果返回
+ * @author guliuzhong
+ */
 @NoArgsConstructor
 @Data
 public class Token {

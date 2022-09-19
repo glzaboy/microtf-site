@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
+/**
+ * 计划任务
+ * @author glzaboy
+ */
 @Configuration
 public class ScheduledConfiguration {
     FsService fsService;

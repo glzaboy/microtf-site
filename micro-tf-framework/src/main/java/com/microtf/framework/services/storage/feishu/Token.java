@@ -3,6 +3,10 @@ package com.microtf.framework.services.storage.feishu;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+/**
+ * 飞书接口 token
+ * @author guliuzhong
+ */
 @Data
 public class Token {
 

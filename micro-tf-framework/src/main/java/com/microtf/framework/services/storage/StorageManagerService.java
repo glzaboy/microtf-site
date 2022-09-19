@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * 存储管理
+ * @author  glzaboy
+ */
 @Service
 public class StorageManagerService implements BeanFactoryAware {
     private BeanFactory beanFactory;
