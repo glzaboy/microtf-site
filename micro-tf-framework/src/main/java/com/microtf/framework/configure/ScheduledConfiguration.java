@@ -27,7 +27,7 @@ public class ScheduledConfiguration {
      * 线下环境刷新
      * cron 格式  秒 分 时 日 月 年
      */
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 3 * * * ?")
     public void testRefresh() {
         fsService.refreshToken("cli_a2e733a3af38900d");
     }
