@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 百度ai api结果返回
+ *
  * @author guliuzhong
  */
 @NoArgsConstructor

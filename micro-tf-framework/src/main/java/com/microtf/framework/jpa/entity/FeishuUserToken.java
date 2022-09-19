@@ -9,12 +9,13 @@ import javax.persistence.Entity;
 
 /**
  * 飞书用户存储
+ *
  * @author guliuzhong
  */
 @Entity
 @Getter
 @Setter
-public class FeishuUserToken  extends AuditEntity {
+public class FeishuUserToken extends AuditEntity {
     /**
      * 应用ID
      */

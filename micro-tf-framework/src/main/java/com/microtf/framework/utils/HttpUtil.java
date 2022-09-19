@@ -204,8 +204,8 @@ public class HttpUtil {
                                         e.printStackTrace();
                                     }
                                 }
-                                if(contentType==null){
-                                    contentType="application/octet-stream";
+                                if (contentType == null) {
+                                    contentType = "application/octet-stream";
                                 }
                                 RequestBody requestBody1 = RequestBody.create(new java.io.File(value.getUri()), MediaType.parse(contentType));
                                 multiPartBodyBuilder.addFormDataPart(postItem.getKey(), value.getFileName() != null ? value.getFileName() : value.getUri().getPath(), requestBody1);

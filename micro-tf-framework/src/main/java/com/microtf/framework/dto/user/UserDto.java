@@ -7,6 +7,7 @@ import java.util.Date;
 
 /**
  * 用户信息
+ *
  * @author glzaboy
  */
 @Data

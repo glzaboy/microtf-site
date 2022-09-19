@@ -12,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 /**
  * 程序启动
+ *
  * @author glzaboy
  */
 @SpringBootApplication
@@ -24,6 +25,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableScheduling
 public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(Application.class,args);
+        SpringApplication.run(Application.class, args);
     }
 }

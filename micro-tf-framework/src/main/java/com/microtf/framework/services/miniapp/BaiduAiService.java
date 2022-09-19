@@ -18,6 +18,7 @@ import java.util.function.Function;
 
 /**
  * 百度Ai接口封装
+ *
  * @author glzaboy@163.com
  */
 @Service
@@ -107,6 +108,7 @@ public class BaiduAiService {
         }
         return json;
     }
+
     public BodySegResult getBodySeg(String pictureUrl) {
         BaiduAiConfig baiduAi = settingService.getSetting("baiduAi", BaiduAiConfig.class);
         if (!baiduAi.getRead()) {

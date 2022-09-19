@@ -6,6 +6,7 @@ import lombok.Setter;
 
 /**
  * 微信小程序应用配置
+ *
  * @author glzaboy@163.com
  */
 @Getter

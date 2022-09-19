@@ -22,9 +22,9 @@ class AuditorComponent implements AuditorAware<Long> {
     @Override
     public Optional<Long> getCurrentAuditor() {
         LoginStateDto loginStateDto = loginService.getLoginStateDto();
-        if(loginStateDto.getGuest()){
+        if (loginStateDto.getGuest()) {
             return Optional.empty();
-        }else{
+        } else {
             return Optional.of(Long.valueOf(loginStateDto.getUserId()));
         }
 

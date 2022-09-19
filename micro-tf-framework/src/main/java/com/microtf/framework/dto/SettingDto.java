@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * 设置数据基础类
+ *
  * @author guliuzhong
  */
 @SuppressWarnings("unused")

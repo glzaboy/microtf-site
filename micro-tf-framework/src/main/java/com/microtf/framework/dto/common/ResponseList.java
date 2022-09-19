@@ -11,15 +11,16 @@ import java.util.List;
 
 /**
  * 页面信息返回
+ *
  * @author glzab
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ApiModel(value = "ResponseList",description = "接口返回数据对象")
-public class ResponseList<T extends Serializable> extends BaseResponse implements Serializable{
+@ApiModel(value = "ResponseList", description = "接口返回数据对象")
+public class ResponseList<T extends Serializable> extends BaseResponse implements Serializable {
     /**
      * response data
      */
-    @ApiModelProperty(value = "数据",notes = "可以为pageDate数据或直接数据对象")
+    @ApiModelProperty(value = "数据", notes = "可以为pageDate数据或直接数据对象")
     private List<T> data;
 }

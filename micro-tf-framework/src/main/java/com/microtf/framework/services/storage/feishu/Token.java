@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * 飞书接口 token
+ *
  * @author guliuzhong
  */
 @Data

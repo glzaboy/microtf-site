@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  * 计划任务
+ *
  * @author glzaboy
  */
 @Configuration

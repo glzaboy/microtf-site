@@ -78,7 +78,7 @@ public class LoginService {
         HttpServletRequest request = requestAttributes.getRequest();
         String authorization = request.getHeader("Authorization");
         Optional<String> jwtOption = Optional.empty();
-        String bearer="Bearer ";
+        String bearer = "Bearer ";
         if (authorization != null && authorization.startsWith(bearer)) {
             jwtOption = Optional.of(authorization.replace(bearer, ""));
         }
@@ -97,7 +97,7 @@ public class LoginService {
             }
         }
         if (jwtOption.isPresent()) {
-            try{
+            try {
                 DecodedJWT jwtInfo = jwtService.getJwtInfo(jwtOption.get());
                 LoginStateDto.LoginStateDtoBuilder loginStateDtoBuilder = LoginStateDto.builder();
                 if (jwtInfo != null) {
@@ -108,7 +108,7 @@ public class LoginService {
                     loginStateDtoBuilder.guest(true);
                 }
                 loginUserThreadLocal.set(loginStateDtoBuilder.build());
-            }catch (JWTVerificationException exception){
+            } catch (JWTVerificationException exception) {
                 log.error("解码出错,设置用户为Guest原因{}", exception.getMessage());
                 LoginStateDto.LoginStateDtoBuilder loginStateDtoBuilder = LoginStateDto.builder();
                 loginStateDtoBuilder.guest(true);
@@ -120,6 +120,7 @@ public class LoginService {
             loginUserThreadLocal.set(loginStateDtoBuilder.build());
         }
     }
+
     /**
      * 获取登录用户对象
      *
@@ -128,14 +129,15 @@ public class LoginService {
      */
     public LoginStateDto getLoginStateDto() {
         LoginStateDto loginStateDto = loginUserThreadLocal.get();
-        if(loginStateDto!=null){
+        if (loginStateDto != null) {
             return loginStateDto;
         }
-        LoginStateDto.LoginStateDtoBuilder loginStateDtoBuilder=LoginStateDto.builder();
+        LoginStateDto.LoginStateDtoBuilder loginStateDtoBuilder = LoginStateDto.builder();
         loginStateDtoBuilder.guest(true);
         loginUserThreadLocal.set(loginStateDtoBuilder.build());
         return loginStateDtoBuilder.build();
     }
+
     /**
      * 获取登录用户ID
      *
@@ -145,6 +147,7 @@ public class LoginService {
     public String getUserId() {
         return getLoginStateDto().getUserId();
     }
+
     /**
      * 判断用户是否是访客
      * 判断标准是否登录

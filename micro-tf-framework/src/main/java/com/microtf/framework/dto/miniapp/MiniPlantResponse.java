@@ -11,11 +11,12 @@ import java.util.List;
 
 /**
  * 植物识别返回给小程序结果
+ *
  * @author glzaboy
  */
 @Getter
 @Setter
-public  class MiniPlantResponse extends MiniAppResponse{
+public class MiniPlantResponse extends MiniAppResponse {
 
     @JsonProperty("result")
     private List<PlantResult.ResultDTO> result;

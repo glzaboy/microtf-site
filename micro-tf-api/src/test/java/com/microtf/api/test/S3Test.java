@@ -44,28 +44,32 @@ public class S3Test {
 
     @Autowired
     CategoryRepository categoryRepository;
+
     @Test
-    public void test(){
+    public void test() {
         storageManagerService.selectStorage("sentany").ifPresent(
-                item-> item.upload("This is china an programmer dev".getBytes(StandardCharsets.UTF_8),"sentany/abc.txt",null)
+                item -> item.upload("This is china an programmer dev".getBytes(StandardCharsets.UTF_8), "sentany/abc.txt", null)
         );
     }
+
     @Test
-    public void test2(){
-        Page<CategoryEntity> all = categoryRepository.findAll(PageRequest.of(0,10));
+    public void test2() {
+        Page<CategoryEntity> all = categoryRepository.findAll(PageRequest.of(0, 10));
         ResponsePage<CategoryDto> categoryDtoResponsePage = ResponseUtil.responseAsPage(all, CategoryDto.class);
         log.info(String.valueOf(categoryDtoResponsePage));
     }
+
     @Test
-    public void test3(){
+    public void test3() {
         List<CategoryEntity> all = categoryRepository.findAll();
         ResponseList<CategoryDto> listResponseList = ResponseUtil.responseAsList(all, CategoryDto.class);
         log.info(String.valueOf(listResponseList));
     }
+
     @Test
-    public void test4(){
+    public void test4() {
         ServiceLoader<StorageService> load = ServiceLoader.load(StorageService.class);
-        for (StorageService item:load){
+        for (StorageService item : load) {
             System.out.println(item);
         }
     }

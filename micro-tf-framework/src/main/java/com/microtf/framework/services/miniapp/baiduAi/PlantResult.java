@@ -8,12 +8,13 @@ import java.util.List;
 
 /**
  * 植物识别结果
+ *
  * @author glzaboy
  * @version 1.1
  */
 @NoArgsConstructor
 @Data
-public class PlantResult  {
+public class PlantResult {
 
     @JsonProperty("result")
     private List<ResultDTO> result;

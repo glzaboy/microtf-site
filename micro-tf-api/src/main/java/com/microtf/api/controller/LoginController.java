@@ -27,9 +27,10 @@ import java.util.Optional;
 
 /**
  * 用户信息
+ *
  * @author guliuzhong
  */
-@Api(value = "用户",tags = "login")
+@Api(value = "用户", tags = "login")
 @RestController
 @RequestMapping("/login")
 @Slf4j
@@ -48,14 +49,14 @@ public class LoginController {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/login",method = {RequestMethod.POST},produces = {"application/json"})
-    @ApiResponse(code = 200,message = "登录成功")
-    public LoginResponse login(@RequestBody LoginUser loginUserIn){
-        LoginResponse loginUserOut=new LoginResponse();
+    @RequestMapping(value = "/login", method = {RequestMethod.POST}, produces = {"application/json"})
+    @ApiResponse(code = 200, message = "登录成功")
+    public LoginResponse login(@RequestBody LoginUser loginUserIn) {
+        LoginResponse loginUserOut = new LoginResponse();
         loginUserOut.setType(loginUserIn.getLoginType().toString());
         try {
             Optional<LoginUser> login = loginService.login(loginUserIn);
-            if(login.isPresent()){
+            if (login.isPresent()) {
                 LoginUser loginUser = login.get();
                 loginUserOut.setType(loginUser.getLoginType().toString());
                 String token = loginService.signToken(loginUser);
@@ -64,7 +65,7 @@ public class LoginController {
                 ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
                 assert requestAttributes != null;
                 HttpServletResponse response = requestAttributes.getResponse();
-                Cookie cookie=new Cookie("auth",token);
+                Cookie cookie = new Cookie("auth", token);
                 cookie.setMaxAge(86400);
                 cookie.setHttpOnly(true);
                 cookie.setPath("/");
@@ -72,17 +73,18 @@ public class LoginController {
                 response.addCookie(cookie);
             }
         } catch (LoginException e) {
-            log.warn("有用户登录但是失败了原因{}",e.getMessage());
+            log.warn("有用户登录但是失败了原因{}", e.getMessage());
             loginUserOut.setStatus("error");
         }
         return loginUserOut;
     }
+
     @Login
-    @RequestMapping(value = "/currentUser",method = {RequestMethod.GET},produces = {"application/json"})
-    public Response<CurrentUser> currentUser(){
-        CurrentUser currentUser=new CurrentUser();
+    @RequestMapping(value = "/currentUser", method = {RequestMethod.GET}, produces = {"application/json"})
+    public Response<CurrentUser> currentUser() {
+        CurrentUser currentUser = new CurrentUser();
         LoginStateDto loginStateDto = loginService.getLoginStateDto();
-        userService.getUserDto(loginStateDto.getUserId()).ifPresent(user->{
+        userService.getUserDto(loginStateDto.getUserId()).ifPresent(user -> {
             currentUser.setName(user.getName());
             currentUser.setUserid(String.valueOf(user.getId()));
             currentUser.setEmail(user.getEmail());
@@ -91,11 +93,12 @@ public class LoginController {
         });
         return ResponseUtil.responseData(currentUser);
     }
+
     @Login
-    @RequestMapping(value = "/logout",method = {RequestMethod.GET},produces = {"application/json"})
-    public Response<String> logout(){
+    @RequestMapping(value = "/logout", method = {RequestMethod.GET}, produces = {"application/json"})
+    public Response<String> logout() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        Cookie cookie=new Cookie("auth",null);
+        Cookie cookie = new Cookie("auth", null);
         cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
         cookie.setPath("/");

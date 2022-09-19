@@ -8,12 +8,12 @@ import java.util.List;
 
 /**
  * 百度ai ocr 接口识别结果
+ *
  * @author glzaboy
  */
 @NoArgsConstructor
 @Data
 public class BodySegResult {
-
 
 
     @JsonProperty("error_code")

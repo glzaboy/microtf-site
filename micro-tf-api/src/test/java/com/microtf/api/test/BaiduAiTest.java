@@ -17,8 +17,9 @@ public class BaiduAiTest {
 
     @Test
     public void testPlan() {
-        baiduAiService.getPlant("https://admin.microtf.com/api/wxv2/getFeishuFile/boxcnmvAP5QqxjyDLBFZaFXOgKc",5);
+        baiduAiService.getPlant("https://admin.microtf.com/api/wxv2/getFeishuFile/boxcnmvAP5QqxjyDLBFZaFXOgKc", 5);
     }
+
     @Test
     public void testOcrText() {
         OcrResult picOcrText = baiduAiService.getPicOcrText("https://img2.baidu.com/it/u=3502362999,3830275433&fm=253&fmt=auto&app=138&f=JPEG?w=588&h=500");

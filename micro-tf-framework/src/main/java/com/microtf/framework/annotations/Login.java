@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * 控制器登录及检测
+ *
  * @author glzaboy
  */
 @Target({ElementType.METHOD})
@@ -18,5 +19,5 @@ public @interface Login {
      *
      * @return 是否禁用guest
      */
-    boolean disableGuest() default  false;
+    boolean disableGuest() default false;
 }

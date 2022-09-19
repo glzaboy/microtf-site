@@ -22,6 +22,7 @@ import java.util.function.Function;
 
 /**
  * 飞n收服务封装
+ *
  * @author glzaboy@163.com
  */
 @Service

@@ -11,11 +11,12 @@ import java.util.List;
 
 /**
  * 小程序OCR接口返回
- * @author  glzaboy
+ *
+ * @author glzaboy
  */
 @Getter
 @Setter
-public  class MiniOcrResponse extends MiniAppResponse{
+public class MiniOcrResponse extends MiniAppResponse {
 
     @JsonProperty("paragraphs_result")
     private List<OcrResult.ParagraphsResultDTO> paragraphsResult;

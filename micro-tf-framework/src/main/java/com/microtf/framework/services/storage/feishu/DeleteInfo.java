@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * 飞书小程序上传结果
- * @author  glzaboy
+ *
+ * @author glzaboy
  */
 @NoArgsConstructor
 @Data

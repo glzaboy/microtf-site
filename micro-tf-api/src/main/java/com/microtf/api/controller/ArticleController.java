@@ -1,7 +1,9 @@
 package com.microtf.api.controller;
 
 import com.microtf.framework.annotations.Login;
-import com.microtf.framework.dto.*;
+import com.microtf.framework.dto.BaseResponse;
+import com.microtf.framework.dto.Response;
+import com.microtf.framework.dto.ResponsePage;
 import com.microtf.framework.dto.article.*;
 import com.microtf.framework.dto.site.SiteDto;
 import com.microtf.framework.exceptions.BizException;
@@ -112,6 +114,7 @@ public class ArticleController {
             return n;
         });
     }
+
     @RequestMapping(value = "/getArticle2", method = {RequestMethod.GET}, produces = {"application/json"})
     @ApiResponse(code = 200, message = "获取单篇文章")
     @ApiOperation(value = "获取单篇文章", notes = "获取单篇文章")
@@ -130,6 +133,7 @@ public class ArticleController {
             return n;
         });
     }
+
     /**
      * 保存文章
      *
@@ -160,6 +164,7 @@ public class ArticleController {
             return n;
         });
     }
+
     @Login
     @RequestMapping(value = "/getArticleList", method = {RequestMethod.POST}, produces = {"application/json"})
     @ApiResponse(code = 200, message = "文章列表")
@@ -177,13 +182,15 @@ public class ArticleController {
             BeanUtils.copyProperties(item.getContent(), articleContentDto);
             n.setContent(articleContentDto);
             n.setCategoryId(item.getCategoryEntityList().stream().map(CategoryEntity::getId).toList());
-            n.setCategoryDtoList(item.getCategoryEntityList().stream().map((item2)->{
-                CategoryDto categoryDto=new CategoryDto();
-                BeanUtils.copyProperties(item2,categoryDto);
-                return categoryDto;}).toList());
+            n.setCategoryDtoList(item.getCategoryEntityList().stream().map((item2) -> {
+                CategoryDto categoryDto = new CategoryDto();
+                BeanUtils.copyProperties(item2, categoryDto);
+                return categoryDto;
+            }).toList());
             return n;
         });
     }
+
     @Login
     @RequestMapping(value = "/delArticle", method = {RequestMethod.POST}, produces = {"application/json"})
     @ApiResponse(code = 200, message = "删除文章")

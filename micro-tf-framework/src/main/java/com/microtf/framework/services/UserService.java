@@ -73,11 +73,12 @@ public class UserService {
         }
         return Optional.empty();
     }
+
     /**
      * 根据用户ID获取用户Dto
      *
      * @param userId 用户ID
-     * @return  用户Dto
+     * @return 用户Dto
      */
     public Optional<UserDto> getUserDto(String userId) {
         Optional<UserEntity> byId = getUserEntity(userId);
@@ -90,6 +91,7 @@ public class UserService {
             return Optional.empty();
         }
     }
+
     @Transactional(rollbackOn = {BizException.class})
     public void save(UserDto userDto) {
         UserEntity userEntity1 = new UserEntity();

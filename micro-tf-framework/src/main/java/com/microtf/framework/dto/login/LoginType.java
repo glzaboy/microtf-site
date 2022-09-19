@@ -2,6 +2,7 @@ package com.microtf.framework.dto.login;
 
 /**
  * 用户登录方式
+ *
  * @author glzaboy
  */
 public enum LoginType {

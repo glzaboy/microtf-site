@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * 当前用户信息
+ *
  * @author glzaboy
  */
 @Data

@@ -6,6 +6,7 @@ import lombok.Setter;
 
 /**
  * 存储配置
+ *
  * @author glzaboy
  */
 @Getter

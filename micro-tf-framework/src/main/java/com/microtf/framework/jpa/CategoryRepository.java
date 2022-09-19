@@ -13,6 +13,7 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
     /**
      * 通过分类进行筛选
+     *
      * @param categoryIds 分类ID
      * @return 数据库中的分类
      */

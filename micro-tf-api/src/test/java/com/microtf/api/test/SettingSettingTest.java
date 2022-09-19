@@ -13,9 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class SettingSettingTest {
     @Autowired
     SettingService settingService;
+
     @Test
-    public void saveTest(){
-        Config config=new Config();
+    public void saveTest() {
+        Config config = new Config();
         config.setBucket("microtf");
         config.setRegion("cn-east-1");
         config.setEndPoint("https://s3-cn-east-1.qiniucs.com/");
@@ -27,8 +28,9 @@ public class SettingSettingTest {
         config.setUrlHost("https://microtf.qintingfm.com");
         settingService.saveSetting("microtf", config);
     }
+
     @Test
-    public void getSettingTest(){
+    public void getSettingTest() {
         Config microtf = settingService.getSetting("microtf", Config.class);
         log.info(String.valueOf(microtf));
         Config microtf2 = settingService.getSetting("microtf", Config.class);

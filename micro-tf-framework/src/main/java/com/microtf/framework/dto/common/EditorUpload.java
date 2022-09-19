@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * 文件上传返回信息
+ *
  * @author glzaboy
  */
 @Data

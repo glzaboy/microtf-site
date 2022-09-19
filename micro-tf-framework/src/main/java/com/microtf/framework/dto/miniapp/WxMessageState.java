@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * 微信小程序接口返回值
+ *
  * @author guliuzhong
  */
 @Data

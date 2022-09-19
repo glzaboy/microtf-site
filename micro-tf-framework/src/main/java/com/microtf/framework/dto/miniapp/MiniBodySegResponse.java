@@ -11,11 +11,12 @@ import java.util.List;
 
 /**
  * 小程序OCR接口返回
- * @author  glzaboy
+ *
+ * @author glzaboy
  */
 @Getter
 @Setter
-public  class MiniBodySegResponse extends MiniAppResponse{
+public class MiniBodySegResponse extends MiniAppResponse {
     @JsonProperty("log_id")
     private Long logId;
     @JsonProperty("labelmap")

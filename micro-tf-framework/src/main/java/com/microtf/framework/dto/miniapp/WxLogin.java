@@ -6,6 +6,7 @@ import lombok.Data;
 
 /**
  * 微信小程序获取用户登录信息
+ *
  * @author glzaboy@163.com
  * {
  * "openid":"xxxxxx",

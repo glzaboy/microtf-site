@@ -12,9 +12,9 @@ import java.io.Serializable;
  * @author guliuzhong
  */
 @Data
-@ApiModel(value = "RequestCategory",description = "类目查询接口")
+@ApiModel(value = "RequestCategory", description = "类目查询接口")
 public class RequestCategory implements Serializable {
-    @ApiModelProperty(value = "类目名称",notes = "首页")
+    @ApiModelProperty(value = "类目名称", notes = "首页")
     String name;
     @JsonUnwrapped
     Page page;

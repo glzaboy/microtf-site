@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * 文章
+ *
  * @author guliuzhong
  */
 @Data
@@ -35,9 +36,9 @@ public class ArticleDto implements Serializable {
     /**
      * 类目ID
      */
-    List<Long> categoryId=new ArrayList<>();
+    List<Long> categoryId = new ArrayList<>();
 
-    List<CategoryDto> categoryDtoList=new ArrayList<>();
+    List<CategoryDto> categoryDtoList = new ArrayList<>();
 
     @ApiModelProperty(value = "站点")
     SiteDto siteDto;

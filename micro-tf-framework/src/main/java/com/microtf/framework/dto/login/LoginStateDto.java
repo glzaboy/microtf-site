@@ -6,6 +6,7 @@ import lombok.ToString;
 
 /**
  * 登录用户状态
+ *
  * @author glzaboy glzaboy@163.com
  */
 @Builder

@@ -36,9 +36,9 @@ public class UserController {
     @RequestMapping(value = "/info", method = {RequestMethod.GET})
     public Response<UserDto> info() {
         Optional<UserDto> loginUser = userService.getCurrentUserDto();
-        if(loginUser.isPresent()){
+        if (loginUser.isPresent()) {
             return ResponseUtil.responseData(loginUser.get());
-        }else{
+        } else {
             throw new BizException("用户不存在");
         }
     }

@@ -11,6 +11,7 @@ import java.io.IOException;
 
 /**
  * 图片工具
+ *
  * @author glzaboy
  */
 @Slf4j
@@ -19,25 +20,29 @@ public class ImageUtil {
 
     /**
      * 彩色图片转黑白转变片
+     *
      * @param source 采购图片源
      * @return 黑白图片
      */
     public static BufferedImage grayImage(BufferedImage source) {
         BufferedImage grayImage = new BufferedImage(source.getWidth(), source.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         Graphics graphics = grayImage.getGraphics();
-        graphics.drawImage(source,0,0,source.getWidth(),source.getHeight(),null);
+        graphics.drawImage(source, 0, 0, source.getWidth(), source.getHeight(), null);
         return grayImage;
     }
+
     public static BufferedImage byte2BufferedImage(byte[] fileByte) throws IOException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileByte);
         return ImageIO.read(byteArrayInputStream);
     }
+
     public static BufferedImage file2BufferedImage(File file) throws IOException {
         return ImageIO.read(file);
     }
 
     /**
      * 图片空白裁剪
+     *
      * @param fileByte 二进步
      * @return 生成好的图片文件
      * @throws IOException 计取二进制出错
@@ -45,8 +50,10 @@ public class ImageUtil {
     public static BufferedImage compress(byte[] fileByte) throws IOException {
         return compress(byte2BufferedImage(fileByte));
     }
+
     /**
      * 图片空白裁剪
+     *
      * @param file 文件
      * @return 生成好的图片文件
      * @throws IOException 计取二进制出错
@@ -54,8 +61,10 @@ public class ImageUtil {
     public static BufferedImage compress(File file) throws IOException {
         return compress(file2BufferedImage(file));
     }
+
     /**
      * 图片空白裁剪
+     *
      * @param image 图片BufferedImage
      * @return 生成好的图片文件
      */

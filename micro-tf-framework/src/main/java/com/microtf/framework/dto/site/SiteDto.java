@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 /**
  * 站点信息
+ *
  * @author glzaboy
  */
 @Data
@@ -22,13 +23,13 @@ public class SiteDto implements Serializable {
      * 绘本馆名称30个字符
      */
     @NotBlank(message = "绘本馆名称不能为空")
-    @ApiModelProperty(value = "绘本馆",notes = "30个字符")
+    @ApiModelProperty(value = "绘本馆", notes = "30个字符")
     String name;
     /**
      * 分馆名称
      */
     @NotBlank(message = "分馆名称不能为空")
-    @ApiModelProperty(value = "分馆名称",notes = "不能为空")
+    @ApiModelProperty(value = "分馆名称", notes = "不能为空")
     String subName;
 
     /**

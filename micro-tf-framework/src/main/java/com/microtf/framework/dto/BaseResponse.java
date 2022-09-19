@@ -25,8 +25,9 @@ public class BaseResponse {
     /**
      * error display type： 0 silent; 1 message.warn; 2 message.error; 4 notification; 9 page
      */
-    @ApiModelProperty(value = "显示类型",notes ="0 silent; 1 message.warn; 2 message.error; 4 notification; 9 page")
+    @ApiModelProperty(value = "显示类型", notes = "0 silent; 1 message.warn; 2 message.error; 4 notification; 9 page")
     private Integer showType;
+
     public enum ErrorShowType {
         /**
          * 静默信息

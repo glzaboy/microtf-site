@@ -18,6 +18,7 @@ import java.time.Duration;
 /**
  * 项目redis配置，
  * 主要是设置redis序列花，以方便阅读
+ *
  * @author glzaboy
  */
 @Configuration
@@ -25,29 +26,32 @@ import java.time.Duration;
 public class RedisConfiguration {
     /**
      * RedisTemplate配置
+     *
      * @param connectionFactory RedisConnectionFactory工厂
      * @return RedisTemplate实例
      */
     @Bean
     @ConditionalOnClass(value = {RedisConnectionFactory.class})
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    RedisTemplate<Object,Object> redisTemplate(RedisConnectionFactory connectionFactory){
+    RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         log.info("初始化RedisTemplate");
-        RedisTemplate<Object,Object> redisTemplate=new RedisTemplate<>();
+        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         return redisTemplate;
     }
+
     /**
      * 缓存配置
+     *
      * @param connectionFactory RedisConnectionFactory工厂
      * @return CacheManager缓存配置
      */
     @Bean
     @ConditionalOnClass(value = {RedisConnectionFactory.class})
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    CacheManager cacheManager(RedisConnectionFactory connectionFactory){
+    CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
         log.info("初始化CacheManager");
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofDays(30))
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))

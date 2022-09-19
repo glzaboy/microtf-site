@@ -1,6 +1,6 @@
 package com.microtf.framework.services;
 
-import com.microtf.framework.dto.*;
+import com.microtf.framework.dto.BaseResponse;
 import com.microtf.framework.dto.article.ArticleDto;
 import com.microtf.framework.dto.article.CategoryDto;
 import com.microtf.framework.dto.article.RequestArticleList;
@@ -64,20 +64,21 @@ public class ArticleService {
         }
         return categoryRepository.findAll(Example.of(category), PageRequest.of(requestCategory.getPage().getCurrent() - 1, requestCategory.getPage().getPageSize()));
     }
+
     public CategoryEntity saveCategory(@NotNull CategoryDto categoryDto, @NotNull SiteEntity siteEntity) {
         CategoryEntity categoryExample = new CategoryEntity();
-        if(categoryDto.getId()==null){
+        if (categoryDto.getId() == null) {
             categoryExample.setId(-1L);
-        }else{
+        } else {
             categoryExample.setId(categoryDto.getId());
         }
         Optional<CategoryEntity> one = categoryRepository.findOne(Example.of(categoryExample));
         CategoryEntity categoryEntity = one.orElseGet(CategoryEntity::new);
-        if(categoryEntity.getId()!=null){
-            if(!siteEntity.equals(categoryEntity.getSiteEntity())){
+        if (categoryEntity.getId() != null) {
+            if (!siteEntity.equals(categoryEntity.getSiteEntity())) {
                 throw new BizException("没有权限编辑。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
             }
-        }else{
+        } else {
             categoryEntity.setSiteEntity(siteEntity);
             categoryEntity.setCreateTime(new Date());
         }
@@ -86,65 +87,69 @@ public class ArticleService {
         categoryEntity.setUpdateTime(new Date());
         return categoryRepository.save(categoryEntity);
     }
+
     public void delCategory(@NotNull Long id, @NotNull SiteEntity siteEntity) {
         Optional<CategoryEntity> one = categoryRepository.findById(id);
-        if(one.isEmpty()){
+        if (one.isEmpty()) {
             throw new BizException("没有权限删除。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
         CategoryEntity categoryEntity = one.get();
-        if(!siteEntity.equals(categoryEntity.getSiteEntity())){
+        if (!siteEntity.equals(categoryEntity.getSiteEntity())) {
             throw new BizException("没有权限删除。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
         try {
             categoryRepository.delete(categoryEntity);
-        }catch (Exception e){
-            log.error("删除类目出错原因{}",e.getMessage());
+        } catch (Exception e) {
+            log.error("删除类目出错原因{}", e.getMessage());
             throw new BizException("没有权限删除2。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
 
     }
-    public ArticleEntity getArticle(@NotNull SiteEntity siteEntity,@NotNull Long id) {
+
+    public ArticleEntity getArticle(@NotNull SiteEntity siteEntity, @NotNull Long id) {
         Optional<ArticleEntity> byId = articleRepository.findById(id);
-        if(byId.isEmpty()){
+        if (byId.isEmpty()) {
             throw new BizException("内容不存在。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
         ArticleEntity articleEntity = byId.get();
-        if(!siteEntity.equals(articleEntity.getSiteEntity())){
+        if (!siteEntity.equals(articleEntity.getSiteEntity())) {
             throw new BizException("内容不存在。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
         return articleEntity;
     }
+
     public ArticleEntity getArticleById(@NotNull Long id) {
         Optional<ArticleEntity> byId = articleRepository.findById(id);
-        if(byId.isEmpty()){
+        if (byId.isEmpty()) {
             throw new BizException("内容不存在。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
         return byId.get();
     }
+
     @Transactional(rollbackOn = {BizException.class})
     public ArticleEntity saveArticle(@NotNull ArticleDto articleDto, @NotNull SiteEntity siteEntity) {
         ArticleEntity articleEntityExample = new ArticleEntity();
-        if(articleDto.getId()==null){
+        if (articleDto.getId() == null) {
             articleEntityExample.setId(-1L);
-        }else{
+        } else {
             articleEntityExample.setId(articleDto.getId());
         }
         Optional<ArticleEntity> one = articleRepository.findOne(Example.of(articleEntityExample));
         ArticleEntity articleEntity = one.orElseGet(ArticleEntity::new);
-        if(articleEntity.getId()!=null){
-            if(!siteEntity.equals(articleEntity.getSiteEntity())){
+        if (articleEntity.getId() != null) {
+            if (!siteEntity.equals(articleEntity.getSiteEntity())) {
                 throw new BizException("没有权限编辑。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
             }
-        }else{
+        } else {
             articleEntity.setSiteEntity(siteEntity);
             articleEntity.setCreateTime(new Date());
         }
         articleEntity.setTitle(articleDto.getTitle());
         articleEntity.setCategoryEntityList(categoryRepository.findAllByIdIn(articleDto.getCategoryId()));
-        if(articleEntity.getContent()!=null){
+        if (articleEntity.getContent() != null) {
             ArticleContentEntity content = articleEntity.getContent();
             content.setHtml(articleDto.getContent().getHtml());
-        }else{
+        } else {
             ArticleContentEntity content = new ArticleContentEntity();
             content.setHtml(articleDto.getContent().getHtml());
             articleEntity.setContent(content);
@@ -152,6 +157,7 @@ public class ArticleService {
         articleEntity.setUpdateTime(new Date());
         return articleRepository.save(articleEntity);
     }
+
     public Page<ArticleEntity> getArticleList(RequestArticleList requestArticleList, @NotNull SiteEntity siteEntity) {
         ArticleEntity articleEntityExample = new ArticleEntity();
         articleEntityExample.setSiteEntity(siteEntity);
@@ -160,21 +166,22 @@ public class ArticleService {
         }
 
         return articleRepository.findAll(Example.of(articleEntityExample),
-                PageRequest.of(requestArticleList.getPage().getCurrent() - 1, requestArticleList.getPage().getPageSize(), Sort.by(new Sort.Order(Sort.Direction.DESC,"updateTime"))));
+                PageRequest.of(requestArticleList.getPage().getCurrent() - 1, requestArticleList.getPage().getPageSize(), Sort.by(new Sort.Order(Sort.Direction.DESC, "updateTime"))));
     }
+
     public void delArticle(@NotNull Long id, @NotNull SiteEntity siteEntity) {
         Optional<ArticleEntity> byId = articleRepository.findById(id);
-        if(byId.isEmpty()){
+        if (byId.isEmpty()) {
             throw new BizException("没有权限删除。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
         ArticleEntity articleEntity = byId.get();
-        if(!siteEntity.equals(articleEntity.getSiteEntity())){
+        if (!siteEntity.equals(articleEntity.getSiteEntity())) {
             throw new BizException("没有权限删除。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
         try {
             articleRepository.delete(articleEntity);
-        }catch (Exception e){
-            log.error("删除文章出错原因{}",e.getMessage());
+        } catch (Exception e) {
+            log.error("删除文章出错原因{}", e.getMessage());
             throw new BizException("没有权限删除2。", BaseResponse.ErrorShowType.ERROR_MESSAGE);
         }
 

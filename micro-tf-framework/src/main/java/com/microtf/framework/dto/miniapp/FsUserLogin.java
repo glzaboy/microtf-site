@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * 飞书用户登录入参
+ *
  * @author glzaboy
  */
 @Data

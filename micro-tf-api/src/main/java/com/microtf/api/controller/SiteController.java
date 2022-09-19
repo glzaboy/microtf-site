@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author <a href="mailto:glzaboy@163.com">glzaboy@163.com</a>
  */
-@Api(value = "站点",tags = "site")
+@Api(value = "站点", tags = "site")
 @RestController
 @RequestMapping("/site")
 public class SiteController {
@@ -44,6 +44,7 @@ public class SiteController {
             throw new BizException("未找到站点信息");
         }
     }
+
     @Login
     @RequestMapping(value = "/saveCurrentSite", method = {RequestMethod.GET})
     public Response<SiteDto> saveSite(SiteDto siteDto) {

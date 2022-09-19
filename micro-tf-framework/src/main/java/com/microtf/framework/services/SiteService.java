@@ -15,11 +15,13 @@ import java.util.Optional;
 
 /**
  * 站点设置
+ *
  * @author glzaboy
  */
 @Service
 public class SiteService {
     private SiteRepository siteRepository;
+
     @Autowired
     public void setSiteRepository(SiteRepository siteRepository) {
         this.siteRepository = siteRepository;

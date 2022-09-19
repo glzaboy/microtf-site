@@ -12,10 +12,11 @@ import java.util.Optional;
 
 /**
  * 通过用户名和密码进行登录
+ *
  * @author glzaboy
  */
 @Service
-public class LoginByWechatService implements LoginAuth{
+public class LoginByWechatService implements LoginAuth {
     LoginRepository loginRepository;
 
     @Override

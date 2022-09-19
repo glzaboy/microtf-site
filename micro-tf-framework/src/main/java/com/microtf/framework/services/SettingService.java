@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 系统设置类
@@ -38,30 +41,31 @@ public class SettingService {
         this.objectMapper = objectMapper;
     }
 
-    public <T extends SettingDto> Map<String,T> getSettingByClass(Class<T> classic) {
+    public <T extends SettingDto> Map<String, T> getSettingByClass(Class<T> classic) {
         SettingEntity settingEntity = new SettingEntity();
         settingEntity.setClassName(classic.getCanonicalName());
         List<SettingEntity> all = settingRepository.findAll(Example.of(settingEntity));
-        Map<String,T> settings=new HashMap<>(16);
-        for (SettingEntity item:all) {
+        Map<String, T> settings = new HashMap<>(16);
+        for (SettingEntity item : all) {
             if (!item.getClassName().equals(classic.getCanonicalName())) {
                 continue;
             }
             try {
-                settings.put(item.getName(),objectMapper.readValue(item.getValue(),classic));
+                settings.put(item.getName(), objectMapper.readValue(item.getValue(), classic));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
         return settings;
     }
+
     @Cacheable(value = "setting.bean", key = "#name")
     public <T extends SettingDto> T getSetting(String name, Class<T> classic) {
         SettingEntity settingEntity = new SettingEntity();
         settingEntity.setName(name);
         settingEntity.setClassName(classic.getCanonicalName());
         List<SettingEntity> all = settingRepository.findAll(Example.of(settingEntity));
-        if(all.size() > 1){
+        if (all.size() > 1) {
             throw new BizException("配置文件不止一个无法进行处理");
         }
         Optional<SettingEntity> settingEntityOptional = all.stream().findFirst();
