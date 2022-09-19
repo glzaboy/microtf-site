@@ -65,7 +65,6 @@ public class S3Test {
     @Test
     public void test4(){
         ServiceLoader<StorageService> load = ServiceLoader.load(StorageService.class);
-//        log.info(load);
         for (StorageService item:load){
             System.out.println(item);
         }

@@ -23,7 +23,7 @@ public class ImageUtil {
      * @return 黑白图片
      */
     public static BufferedImage grayImage(BufferedImage source) {
-        BufferedImage grayImage = new BufferedImage(source.getWidth(), source.getHeight(), BufferedImage.TYPE_BYTE_GRAY);//重点，技巧在这个参数BufferedImage.TYPE_BYTE_GRAY
+        BufferedImage grayImage = new BufferedImage(source.getWidth(), source.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         Graphics graphics = grayImage.getGraphics();
         graphics.drawImage(source,0,0,source.getWidth(),source.getHeight(),null);
         return grayImage;

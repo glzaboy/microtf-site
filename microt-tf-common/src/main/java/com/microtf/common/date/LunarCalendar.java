@@ -1,6 +1,7 @@
 package com.microtf.common.date;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -25,7 +26,7 @@ public class LunarCalendar {
      */
     private static final int[] DAYS_BEFORE_MONTH = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
     /**
-     * 用来表示1900年到2099年间农历年份的相关信息，共24位bit的16进制表示，其中：
+     * 用来表示1900年到2099年之间农历年份的相关信息，共24位bit的16进制表示，其中：
      * 1. 前4位表示该年闰哪个月；
      * 2. 5-17位表示农历年份13个月的大小月分布，0表示小，1表示大；
      * 3. 最后7位表示农历年首（正月初一）对应的公历日期。
@@ -98,10 +99,11 @@ public class LunarCalendar {
         if (year < MIN_YEAR || year > MAX_YEAR || month < 1 || month > 12
                 || monthDay < 1 || monthDay > 30) {
             throw new IllegalArgumentException(
-                    "Illegal lunar date, must be like that:\n\t" +
-                            "year : 1900~2099\n\t" +
-                            "month : 1~12\n\t" +
-                            "day : 1~30");
+                    """
+                            Illegal lunar date, must be like that:
+                            \tyear : 1900~2099
+                            \tmonth : 1~12
+                            \tday : 1~30""");
         }
         dayOffset = (LUNAR_INFO[year - MIN_YEAR] & 0x001F) - 1;
         if (((LUNAR_INFO[year - MIN_YEAR] & 0x0060) >> 5) == 2) {
@@ -186,14 +188,14 @@ public class LunarCalendar {
     /**
      * 将公历日期转换为农历日期，且标识是否是闰月
      *
-     * @param year
-     * @param month
-     * @param monthDay
+     * @param year 年
+     * @param month 月
+     * @param monthDay 日
      * @return 返回公历日期对应的农历日期，year0，month1，day2，leap3
      */
     public static int[] solarToLunar(int year, int month, int monthDay) {
         int[] lunarDate = new int[4];
-        Date baseDate = new GregorianCalendar(1900, 0, 31).getTime();
+        Date baseDate = new GregorianCalendar(1900, Calendar.JANUARY, 31).getTime();
         Date objDate = new GregorianCalendar(year, month - 1, monthDay).getTime();
         int offset = (int) ((objDate.getTime() - baseDate.getTime()) / 86400000L);
         // 用offset减去每农历年的天数计算当天是农历第几天

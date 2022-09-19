@@ -23,9 +23,9 @@ public class BodySegResult {
     @JsonProperty("log_id")
     private Long logId;
     @JsonProperty("labelmap")
-    private String labelmap;
+    private String labelMap;
     @JsonProperty("scoremap")
-    private String scoremap;
+    private String scoreMap;
     @JsonProperty("foreground")
     private String foreground;
     @JsonProperty("person_num")

@@ -19,7 +19,9 @@ import lombok.Data;
 public class WxLogin {
     @JsonProperty(value = "openid")
     String openId;
-    String session_key;
+    @JsonProperty(value = "session_key")
+    String sessionKey;
+    @JsonProperty(value = "unionid")
     String unionId;
     @JsonUnwrapped
     WxMessageState wxMessageState;

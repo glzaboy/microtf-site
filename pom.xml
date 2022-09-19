@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.8</version>
+        <version>2.7.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.microtf</groupId>
     <artifactId>microtf-parent</artifactId>
     <name>micro-tf</name>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>
@@ -47,12 +47,12 @@
             <dependency>
                 <groupId>com.microtf</groupId>
                 <artifactId>micro-tf-framework</artifactId>
-                <version>0.0.2-SNAPSHOT</version>
+                <version>0.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.microtf</groupId>
                 <artifactId>microt-tf-common</artifactId>
-                <version>0.0.2-SNAPSHOT</version>
+                <version>0.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.auth0</groupId>
